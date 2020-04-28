@@ -9,8 +9,10 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Queue;
 import java.util.Set;
+import java.util.Stack;
 import java.util.stream.Stream;
 
+import ds.exp.CyclicGraphException;
 import ds.exp.NoSuchNodeException;
 import ds.exp.NodeCreationException;
 import ds.exp.NullNodeException;
@@ -262,6 +264,44 @@ public class Graph {
 
 	public boolean isGraphAcyclic() {
 		return !this.isCyclic;
+	}
+
+	public void performTopologicalSort() {
+		if (this.isGraphCyclic()) {
+			throw new CyclicGraphException("Topological sort cannot be performed.");
+		} else {
+			this._performTopologicalSort(this._getNodeKeySet());
+		}
+	}
+
+	private void _performTopologicalSort(Set<GraphNode> keySet) {
+		Stack<GraphNode> stackOfNodes = new Stack<>();
+		for (GraphNode node : keySet) {
+			if (node.unVisited()) {
+				this.topologicalVisit(node, stackOfNodes);
+			}
+		}
+		this._printTopologicalOrder(stackOfNodes);
+	}
+
+	private void topologicalVisit(GraphNode currentNode, Stack<GraphNode> stackOfNodes) {
+		List<GraphNode> associatedNodeList = this._getAssociatedNodeList(currentNode);
+
+		if (associatedNodeList != null) {
+			for (GraphNode associatedNode : associatedNodeList) {
+				if (associatedNode.unVisited()) {
+					this.topologicalVisit(associatedNode, stackOfNodes);
+				}
+			}
+		}
+		currentNode.visit();
+		stackOfNodes.push(currentNode);
+	}
+
+	private void _printTopologicalOrder(Stack<GraphNode> stack) {
+		while (!stack.isEmpty()) {
+			System.out.print(stack.pop().getLabel() + " ");
+		}
 	}
 	
 }
