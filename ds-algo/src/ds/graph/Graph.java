@@ -303,5 +303,37 @@ public class Graph {
 			System.out.print(stack.pop().getLabel() + " ");
 		}
 	}
+
+	public int getVertexDegree(GraphNode node) {
+		return 0;
+	}
+	
+	public int getGraphDegree() {
+		return 0;
+	}
+	
+	public int getInDegreeOfVertex(GraphNode node) {
+		return 0;
+	}
+	
+	public int getOutDegreeOfVertex(GraphNode node) {
+		return 0;
+	}
+	
+	public boolean isGraphConnected() {
+		return false;
+	}
+	
+	public int getNumberOfMutualNodesBetween(GraphNode A, GraphNode B) {
+		return 0;
+	}
+	
+	public List<GraphNode> getListOfMutualNodesBetween(GraphNode A, GraphNode B) {
+		return null;
+	}
+	
+	public static void connectIndependentNodes(GraphNode source, GraphNode target) {
+		
+	}
 	
 }
