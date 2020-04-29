@@ -60,6 +60,21 @@ public class Graph {
 		return new GraphNode(index, label);
 	}
 
+	public GraphNode addNode(String label) throws NodeCreationException {
+		GraphNode node = this._createNode(label);
+		if (node == null) {
+			throw new NodeCreationException("unable to create a graph node");
+		} else {
+			this._updateNodeCount();
+			this._updateNodeKeySet(node);
+			return node;
+		}
+	}
+
+	private GraphNode _createNode(String label) {
+		return new GraphNode(label);
+	}
+
 	private void _updateNodeCount() {
 		this.numberOfNodes += 1;
 	}

@@ -12,10 +12,10 @@ public class GraphDemo {
 		GraphNode e = g1.addNode(5, "E");
 		GraphNode f = g1.addNode(6, "F");
 		
-		GraphNode p = g2.addNode(1, "P");
-		GraphNode q = g2.addNode(2, "Q");
-		GraphNode r = g2.addNode(3, "R");
-		GraphNode s = g2.addNode(4, "S");
+		GraphNode p = g2.addNode("P");
+		GraphNode q = g2.addNode("Q");
+		GraphNode r = g2.addNode("R");
+		GraphNode s = g2.addNode("S");
 
 		// g1.connectNodes(a, b);
 		// g1.connectNodes(b, c);

@@ -12,6 +12,17 @@ public class GraphNode {
 		super();
 	}
 
+	public GraphNode(String label) {
+		this();
+		if (label == null) {
+			throw new NullNodeException("node label cannot be null");
+		} else {
+			this.index = -1;
+			this.label = label;
+			this.visited = false;
+		}
+	}
+	
 	public GraphNode(int index, String label) {
 		this();
 		if (label == null) {
