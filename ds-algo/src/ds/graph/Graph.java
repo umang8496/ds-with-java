@@ -85,7 +85,7 @@ public class Graph {
 				}
 			}
 
-			if (!this.isTheGraphDirected()) {
+			if (this.isTheGraphUndirected()) {
 				this._createEdge(target, source);
 			}
 		} else {
@@ -278,19 +278,19 @@ public class Graph {
 		Stack<GraphNode> stackOfNodes = new Stack<>();
 		for (GraphNode node : keySet) {
 			if (node.unVisited()) {
-				this.topologicalVisit(node, stackOfNodes);
+				this._topologicalVisit(node, stackOfNodes);
 			}
 		}
 		this._printTopologicalOrder(stackOfNodes);
 	}
 
-	private void topologicalVisit(GraphNode currentNode, Stack<GraphNode> stackOfNodes) {
+	private void _topologicalVisit(GraphNode currentNode, Stack<GraphNode> stackOfNodes) {
 		List<GraphNode> associatedNodeList = this._getAssociatedNodeList(currentNode);
 
 		if (associatedNodeList != null) {
 			for (GraphNode associatedNode : associatedNodeList) {
 				if (associatedNode.unVisited()) {
-					this.topologicalVisit(associatedNode, stackOfNodes);
+					this._topologicalVisit(associatedNode, stackOfNodes);
 				}
 			}
 		}
@@ -304,6 +304,32 @@ public class Graph {
 		}
 	}
 
+	public void removeGraphNode(GraphNode node) {
+		if (node != null) {
+			if (this._isPresentInGraph(node)) {
+				System.out.println("Removing node " + node + " from graph " + this);
+				this._removeVertex(node);
+			}
+		}
+	}
+
+	private void _removeVertex(GraphNode node) {
+		GraphNode node_to_be_removed = node;
+
+		if (this._getNodeKeySet().contains(node)) {
+			this._getNodeKeySet().remove(node);
+		}
+
+		Set<GraphNode> setOfKeys = this._getNodeKeySet();
+		Iterator<GraphNode> itr = setOfKeys.iterator();
+		while (itr.hasNext()) {
+			GraphNode key = (GraphNode) itr.next();
+			List<GraphNode> list = this._getAssociatedNodeList(key);
+			if (list.contains(node_to_be_removed))
+				list.remove(node_to_be_removed);
+		}
+	}
+	
 	public int getVertexDegree(GraphNode node) {
 		return 0;
 	}

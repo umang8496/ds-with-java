@@ -65,6 +65,14 @@ public class GraphDemo {
 		System.out.println("Is there an edge in " + g1 + " from e to c " + g1.hasEdge(e, c));
 		System.out.println();
 		
+		g1.removeGraphNode(e);
+		g1.displayAdjacencyList();
+		System.out.println();
+		
+		System.out.println("Is there an edge in " + g1 + " from c to e " + g1.hasEdge(c, e));
+		System.out.println("Is there an edge in " + g1 + " from e to c " + g1.hasEdge(e, c));
+		System.out.println();
+		
 		System.out.println("Is graph g1 " + g1 +" cyclic : " + g1.isGraphCyclic());
 		System.out.println("Is graph g2 " + g2 +" cyclic : " + g2.isGraphCyclic());
 		System.out.println();
