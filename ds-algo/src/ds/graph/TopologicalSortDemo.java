@@ -24,10 +24,10 @@ public class TopologicalSortDemo {
 		GraphNode g = g1.addNode(7, "G");
 		GraphNode h = g1.addNode(8, "H");
 		
-		GraphNode p = g2.addNode(1, "P");
-		GraphNode q = g2.addNode(2, "Q");
-		GraphNode r = g2.addNode(3, "R");
-		GraphNode s = g2.addNode(4, "S");
+		GraphNode p = g2.addNode("P");
+		GraphNode q = g2.addNode("Q");
+		GraphNode r = g2.addNode("R");
+		GraphNode s = g2.addNode("S");
 		
 		g1.connectNodes(a, c);
 		g1.connectNodes(b, c);
@@ -44,17 +44,17 @@ public class TopologicalSortDemo {
 		// graph.connectNodes(b, d);
 		// graph.connectNodes(c, e);
 		
-		g2.connectNodes(p, q);
-		g2.connectNodes(p, r);
-		g2.connectNodes(r, s);
-		g2.connectNodes(s, q);
+		g2.connectNodes(p, q, 4);
+		g2.connectNodes(p, r, 7);
+		g2.connectNodes(r, s, 3);
+		g2.connectNodes(s, q, 6);
 		
 		System.out.println("Number of nodes in the " + g1 + " : " + g1.getNumberOfNodes());
 		System.out.println("Number of nodes in the " + g2 + " : " + g2.getNumberOfNodes());
 		System.out.println();
 		
 		g1.displayAdjacencyList();
-		g2.displayAdjacencyList();
+		g2.displayAdjacencyListForWeightedNode();
 		System.out.println();
 		
 		try {

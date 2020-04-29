@@ -80,6 +80,19 @@ public class GraphDemo {
 		// GraphNode alpha = GraphNode.createIndependentNodes(10, "alpha");
 		// GraphNode beta  = GraphNode.createIndependentNodes(20, "beta" );
 		// GraphNode gamma = GraphNode.createIndependentNodes(30, "gamma");
+		
+		/** Test code for weighted graph **/
+		Graph g3 = new Graph(false);			// for directed graph
+		GraphNode w = g3.addNode("W");
+		GraphNode x = g3.addNode("X");
+		GraphNode y = g3.addNode("Y");
+		GraphNode z = g3.addNode("Z");
+		
+		g3.connectNodes(w, x, 4);
+		g3.connectNodes(w, y, 7);
+		g3.connectNodes(y, z, 3);
+		g3.connectNodes(z, x, 6);
+		g3.displayAdjacencyListForWeightedNode();
 	}
 	
 }

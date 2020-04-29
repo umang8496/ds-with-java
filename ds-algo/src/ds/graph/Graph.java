@@ -23,12 +23,16 @@ public class Graph {
 	private Set<GraphNode> nodeKeySet;
 	private boolean isCyclic;
 	private boolean isDirected;
+	
+	/* For Experimenting with Weighted Node */
+	private Map<GraphNode, List<GraphEdge>> adjacencyMapForWeightedNode;
 
 	// creates undirected graph always
 	public Graph() {
 		this.isDirected = false;
 		this.numberOfNodes = 0;
 		this.adjacencyMap = new HashMap<>();
+		this.adjacencyMapForWeightedNode = new HashMap<>();
 		this.nodeKeySet = new LinkedHashSet<>();
 		this.isCyclic = false;
 	}
@@ -41,6 +45,7 @@ public class Graph {
 		this.isDirected = isDirected;
 		this.numberOfNodes = 0;
 		this.adjacencyMap = new HashMap<>();
+		this.adjacencyMapForWeightedNode = new HashMap<>();
 		this.nodeKeySet = new LinkedHashSet<>();
 		this.isCyclic = false;
 	}
@@ -121,6 +126,52 @@ public class Graph {
 		this.adjacencyMap.put(source, tmpList);
 	}
 
+	public void connectNodes(GraphNode source, GraphNode target, Integer weight) throws NoSuchNodeException {
+		if (source != null && target != null && weight != null) {
+			if (source == target) {
+				// then this graph is cyclic
+				this.isCyclic = true;
+			}
+			
+			if (this._isPresentInGraph(source) && this._isPresentInGraph(target)) {
+				GraphEdge edge = this._getEdgeWithWeigth(source, target, weight);
+				if (edge != null) {
+					this._createEdgeWithWeigth(edge);
+				}
+			} else {
+				if (!this._isPresentInGraph(source)) {
+					throw new NoSuchNodeException(source + " is not found in the graph instance.");
+				} else {
+					throw new NoSuchNodeException(target + " is not found in the graph instance.");
+				}
+			}
+
+			if (this.isTheGraphUndirected()) {
+				GraphEdge complementary_edge = this._getEdgeWithWeigth(target, source, weight);
+				this._createEdgeWithWeigth(complementary_edge);
+			}
+		} else {
+			throw new NullNodeException("node cannot be connected");
+		}
+	}
+	
+	private GraphEdge _getEdgeWithWeigth(GraphNode source, GraphNode target, Integer weight) {
+		return new GraphEdge(source, target, weight);
+	}
+	
+	private void _createEdgeWithWeigth(GraphEdge edge) {
+		List<GraphEdge> tmpEdgeList = this.adjacencyMapForWeightedNode.get(edge.getSource());
+
+		if (tmpEdgeList != null) {
+			tmpEdgeList.remove(edge);
+		} else {
+			tmpEdgeList = new LinkedList<>();
+		}
+
+		tmpEdgeList.add(edge);
+		this.adjacencyMapForWeightedNode.put(edge.getSource(), tmpEdgeList);
+	}
+	
 	private boolean _isPresentInGraph(GraphNode node) {
 		return this.nodeKeySet.contains(node);
 	}
@@ -155,6 +206,28 @@ public class Graph {
 		}
 	}
 
+	public void displayAdjacencyListForWeightedNode() {
+		System.out.println("Adjacency List for Weighted Node " + this);
+		this._displayAdjacencyListForWeightedNode();
+		System.out.println();
+	}
+	
+	private void _displayAdjacencyListForWeightedNode() {
+		Iterator<GraphNode> itr = this._getNodeKeySet().iterator();
+		while (itr.hasNext()) {
+			GraphNode node = itr.next();
+			List<GraphEdge> tmp = this.adjacencyMapForWeightedNode.get(node);
+
+			if (tmp != null) {
+				System.out.print("The Node " + node.getLabel() + " has a edges towards: [ ");
+				for (GraphEdge n : tmp) {
+					System.out.print(n.getTarget().getLabel() + "(" + n.getWeight() + ")" + " ");
+				}
+				System.out.println("]");
+			}
+		}
+	}
+	
 	private Set<GraphNode> _getNodeKeySet() {
 		return this.nodeKeySet;
 	}
