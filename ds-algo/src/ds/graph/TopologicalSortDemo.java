@@ -13,7 +13,7 @@ public class TopologicalSortDemo {
 
 	public static void main(String[] args) {
 		Graph g1 = new Graph(true);
-		Graph g2 = new Graph(true);
+		Graph g2 = new Graph(true, true);
 		
 		GraphNode a = g1.addNode(1, "A");
 		GraphNode b = g1.addNode(2, "B");
@@ -44,16 +44,24 @@ public class TopologicalSortDemo {
 		// graph.connectNodes(b, d);
 		// graph.connectNodes(c, e);
 		
+		// for weight graphs
 		g2.connectNodes(p, q, 4);
 		g2.connectNodes(p, r, 7);
 		g2.connectNodes(r, s, 3);
 		g2.connectNodes(s, q, 6);
+		
+		// for unweighted graphs
+		// g2.connectNodes(p, q);
+		// g2.connectNodes(p, r);
+		// g2.connectNodes(r, s);
+		// g2.connectNodes(s, q);
 		
 		System.out.println("Number of nodes in the " + g1 + " : " + g1.getNumberOfNodes());
 		System.out.println("Number of nodes in the " + g2 + " : " + g2.getNumberOfNodes());
 		System.out.println();
 		
 		g1.displayAdjacencyList();
+		// g2.displayAdjacencyList();
 		g2.displayAdjacencyListForWeightedNode();
 		System.out.println();
 		

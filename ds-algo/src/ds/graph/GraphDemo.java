@@ -82,7 +82,7 @@ public class GraphDemo {
 		// GraphNode gamma = GraphNode.createIndependentNodes(30, "gamma");
 		
 		/** Test code for weighted graph **/
-		Graph g3 = new Graph(false);			// for directed graph
+		Graph g3 = new Graph(true, true);			// for directed graph
 		GraphNode w = g3.addNode("W");
 		GraphNode x = g3.addNode("X");
 		GraphNode y = g3.addNode("Y");
