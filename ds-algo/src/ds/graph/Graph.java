@@ -1,5 +1,6 @@
 package ds.graph;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -13,6 +14,7 @@ import java.util.Stack;
 import java.util.stream.Stream;
 
 import ds.exp.CyclicGraphException;
+import ds.exp.IncompatibleGraphTypeException;
 import ds.exp.NoSuchNodeException;
 import ds.exp.NodeCreationException;
 import ds.exp.NullNodeException;
@@ -23,6 +25,7 @@ public class Graph {
 	private Set<GraphNode> nodeKeySet;
 	private boolean isCyclic;
 	private boolean isDirected;
+	private boolean isWeighted;
 	
 	/* For Experimenting with Weighted Node */
 	private Map<GraphNode, List<GraphEdge>> adjacencyMapForWeightedNode;
@@ -32,9 +35,9 @@ public class Graph {
 		this.isDirected = false;
 		this.numberOfNodes = 0;
 		this.adjacencyMap = new HashMap<>();
-		this.adjacencyMapForWeightedNode = new HashMap<>();
 		this.nodeKeySet = new LinkedHashSet<>();
 		this.isCyclic = false;
+		this.isWeighted = false;
 	}
 
 	// creates directed/undirected graph based on the boolean value
@@ -45,9 +48,24 @@ public class Graph {
 		this.isDirected = isDirected;
 		this.numberOfNodes = 0;
 		this.adjacencyMap = new HashMap<>();
-		this.adjacencyMapForWeightedNode = new HashMap<>();
 		this.nodeKeySet = new LinkedHashSet<>();
 		this.isCyclic = false;
+		this.isWeighted = false;
+	}
+	
+	// creates the weighted graph if isWeighted is true
+	public Graph(boolean isDirected, boolean isWeighted) {
+		super();
+		this.isDirected = isDirected;
+		this.numberOfNodes = 0;		
+		this.nodeKeySet = new LinkedHashSet<>();
+		this.isCyclic = false;
+		this.isWeighted = isWeighted;
+		if(isWeighted == false) {
+			this.adjacencyMap = new HashMap<>();
+		} else {
+			this.adjacencyMapForWeightedNode = new HashMap<>();
+		}
 	}
 
 	public GraphNode addNode(int index, String label) throws NodeCreationException {
@@ -61,10 +79,6 @@ public class Graph {
 		}
 	}
 
-	private GraphNode _createNode(int index, String label) {
-		return new GraphNode(index, label);
-	}
-
 	public GraphNode addNode(String label) throws NodeCreationException {
 		GraphNode node = this._createNode(label);
 		if (node == null) {
@@ -74,6 +88,10 @@ public class Graph {
 			this._updateNodeKeySet(node);
 			return node;
 		}
+	}
+	
+	private GraphNode _createNode(int index, String label) {
+		return new GraphNode(index, label);
 	}
 
 	private GraphNode _createNode(String label) {
@@ -113,6 +131,39 @@ public class Graph {
 		}
 	}
 
+	public void connectNodes(GraphNode source, GraphNode target, Integer weight) throws NoSuchNodeException {
+		if (this._isGraphWeighted()) {
+			if (source != null && target != null && weight != null) {
+				if (source == target) {
+					// then this graph is cyclic
+					this.isCyclic = true;
+				}
+				
+				if (this._isPresentInGraph(source) && this._isPresentInGraph(target)) {
+					GraphEdge edge = this._getEdgeWithWeigth(source, target, weight);
+					if (edge != null) {
+						this._createEdgeWithWeigth(edge);
+					}
+				} else {
+					if (!this._isPresentInGraph(source)) {
+						throw new NoSuchNodeException(source + " is not found in the graph instance.");
+					} else {
+						throw new NoSuchNodeException(target + " is not found in the graph instance.");
+					}
+				}
+	
+				if (this.isTheGraphUndirected()) {
+					GraphEdge complementary_edge = this._getEdgeWithWeigth(target, source, weight);
+					this._createEdgeWithWeigth(complementary_edge);
+				}
+			} else {
+				throw new NullNodeException("node cannot be connected");
+			}
+		} else {
+			throw new IncompatibleGraphTypeException("Unweighted graph cannot have weights.");
+		}
+	}
+	
 	private void _createEdge(GraphNode source, GraphNode target) {
 		List<GraphNode> tmpList = this.adjacencyMap.get(source);
 
@@ -124,35 +175,6 @@ public class Graph {
 
 		tmpList.add(target);
 		this.adjacencyMap.put(source, tmpList);
-	}
-
-	public void connectNodes(GraphNode source, GraphNode target, Integer weight) throws NoSuchNodeException {
-		if (source != null && target != null && weight != null) {
-			if (source == target) {
-				// then this graph is cyclic
-				this.isCyclic = true;
-			}
-			
-			if (this._isPresentInGraph(source) && this._isPresentInGraph(target)) {
-				GraphEdge edge = this._getEdgeWithWeigth(source, target, weight);
-				if (edge != null) {
-					this._createEdgeWithWeigth(edge);
-				}
-			} else {
-				if (!this._isPresentInGraph(source)) {
-					throw new NoSuchNodeException(source + " is not found in the graph instance.");
-				} else {
-					throw new NoSuchNodeException(target + " is not found in the graph instance.");
-				}
-			}
-
-			if (this.isTheGraphUndirected()) {
-				GraphEdge complementary_edge = this._getEdgeWithWeigth(target, source, weight);
-				this._createEdgeWithWeigth(complementary_edge);
-			}
-		} else {
-			throw new NullNodeException("node cannot be connected");
-		}
 	}
 	
 	private GraphEdge _getEdgeWithWeigth(GraphNode source, GraphNode target, Integer weight) {
@@ -345,6 +367,10 @@ public class Graph {
 	private List<GraphNode> _getAssociatedNodeList(GraphNode currentNode) {
 		return this.adjacencyMap.get(currentNode);
 	}
+	
+	private List<GraphEdge> _getAssociatedWeightedNodeList(GraphNode currentNode) {
+		return this.adjacencyMapForWeightedNode.get(currentNode);
+	}
 
 	public boolean isGraphCyclic() {
 		return this.isCyclic;
@@ -355,10 +381,18 @@ public class Graph {
 	}
 
 	public void performTopologicalSort() {
-		if (this.isGraphCyclic()) {
-			throw new CyclicGraphException("Topological sort cannot be performed.");
+		if(this._isGraphWeighted()) {
+			if (this.isGraphCyclic()) {
+				throw new CyclicGraphException("Topological sort cannot be performed.");
+			} else {
+				this._performTopologicalSortForWeightedGraph(this._getNodeKeySet());
+			}
 		} else {
-			this._performTopologicalSort(this._getNodeKeySet());
+			if (this.isGraphCyclic()) {
+				throw new CyclicGraphException("Topological sort cannot be performed.");
+			} else {
+				this._performTopologicalSort(this._getNodeKeySet());
+			}
 		}
 	}
 
@@ -367,6 +401,16 @@ public class Graph {
 		for (GraphNode node : keySet) {
 			if (node.unVisited()) {
 				this._topologicalVisit(node, stackOfNodes);
+			}
+		}
+		this._printTopologicalOrder(stackOfNodes);
+	}
+	
+	private void _performTopologicalSortForWeightedGraph(Set<GraphNode> keySet) {
+		Stack<GraphNode> stackOfNodes = new Stack<>();
+		for (GraphNode node : keySet) {
+			if (node.unVisited()) {
+				this._topologicalVisitForWeightedGraph(node, stackOfNodes);
 			}
 		}
 		this._printTopologicalOrder(stackOfNodes);
@@ -386,6 +430,21 @@ public class Graph {
 		stackOfNodes.push(currentNode);
 	}
 
+	private void _topologicalVisitForWeightedGraph(GraphNode currentNode, Stack<GraphNode> stackOfNodes) {
+		List<GraphEdge> associatedEdgeList = this._getAssociatedWeightedNodeList(currentNode);
+		List<GraphNode> associatedNodeList = this._convertEdgeListIntoNodeList(associatedEdgeList);
+
+		if (associatedNodeList != null) {
+			for (GraphNode associatedNode : associatedNodeList) {
+				if (associatedNode.unVisited()) {
+					this._topologicalVisitForWeightedGraph(associatedNode, stackOfNodes);
+				}
+			}
+		}
+		currentNode.visit();
+		stackOfNodes.push(currentNode);
+	}
+	
 	private void _printTopologicalOrder(Stack<GraphNode> stack) {
 		while (!stack.isEmpty()) {
 			System.out.print(stack.pop().getLabel() + " ");
@@ -417,6 +476,8 @@ public class Graph {
 				list.remove(node_to_be_removed);
 		}
 	}
+	
+	
 	
 	public int getVertexDegree(GraphNode node) {
 		return 0;
@@ -450,4 +511,7 @@ public class Graph {
 		
 	}
 	
+	private boolean _isGraphWeighted() {
+		return this.isWeighted;
+	}
 }
