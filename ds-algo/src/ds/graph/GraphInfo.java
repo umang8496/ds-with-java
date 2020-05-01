@@ -41,12 +41,6 @@ public class GraphInfo {
 		System.out.println("Out degree for " + f + " vertex : " + Graph.getVertexOutDegree(g1, f));
 		System.out.println();
 		
-		System.out.println("Out degree for " + p + " vertex : " + Graph.getVertexOutDegree(g2, p));
-		System.out.println("Out degree for " + q + " vertex : " + Graph.getVertexOutDegree(g2, q));
-		System.out.println("Out degree for " + r + " vertex : " + Graph.getVertexOutDegree(g2, r));
-		System.out.println("Out degree for " + s + " vertex : " + Graph.getVertexOutDegree(g2, s));
-		System.out.println();
-		
 		System.out.println("In degree for " + a + " vertex : " + Graph.getVertexInDegree(g1, a));
 		System.out.println("In degree for " + b + " vertex : " + Graph.getVertexInDegree(g1, b));
 		System.out.println("In degree for " + c + " vertex : " + Graph.getVertexInDegree(g1, c));
@@ -55,11 +49,32 @@ public class GraphInfo {
 		System.out.println("In degree for " + f + " vertex : " + Graph.getVertexInDegree(g1, f));
 		System.out.println();
 		
+		System.out.println("Total degree for " + a + " vertex : " + Graph.getVertexDegree(g1, a));
+		System.out.println("Total degree for " + b + " vertex : " + Graph.getVertexDegree(g1, b));
+		System.out.println("Total degree for " + c + " vertex : " + Graph.getVertexDegree(g1, c));
+		System.out.println("Total degree for " + d + " vertex : " + Graph.getVertexDegree(g1, d));
+		System.out.println("Total degree for " + e + " vertex : " + Graph.getVertexDegree(g1, e));
+		System.out.println("Total degree for " + f + " vertex : " + Graph.getVertexDegree(g1, f));
+		System.out.println();
+		
+		System.out.println("Out degree for " + p + " vertex : " + Graph.getVertexOutDegree(g2, p));
+		System.out.println("Out degree for " + q + " vertex : " + Graph.getVertexOutDegree(g2, q));
+		System.out.println("Out degree for " + r + " vertex : " + Graph.getVertexOutDegree(g2, r));
+		System.out.println("Out degree for " + s + " vertex : " + Graph.getVertexOutDegree(g2, s));
+		System.out.println();
+		
 		System.out.println("In degree for " + p + " vertex : " + Graph.getVertexInDegree(g2, p));
 		System.out.println("In degree for " + q + " vertex : " + Graph.getVertexInDegree(g2, q));
 		System.out.println("In degree for " + r + " vertex : " + Graph.getVertexInDegree(g2, r));
 		System.out.println("In degree for " + s + " vertex : " + Graph.getVertexInDegree(g2, s));
 		System.out.println();
+		
+		System.out.println("Total degree for " + p + " vertex : " + Graph.getVertexDegree(g2, p));
+		System.out.println("Total degree for " + q + " vertex : " + Graph.getVertexDegree(g2, q));
+		System.out.println("Total degree for " + r + " vertex : " + Graph.getVertexDegree(g2, r));
+		System.out.println("Total degree for " + s + " vertex : " + Graph.getVertexDegree(g2, s));
+		System.out.println();
+		
 		
 		Graph g3 = new Graph(true, true); 	// for directed graph
 		GraphNode w = g3.addNode("W");
@@ -84,6 +99,12 @@ public class GraphInfo {
 		System.out.println("In degree for " + x + " vertex : " + Graph.getVertexInDegree(g3, x));
 		System.out.println("In degree for " + y + " vertex : " + Graph.getVertexInDegree(g3, y));
 		System.out.println("In degree for " + z + " vertex : " + Graph.getVertexInDegree(g3, z));
+		System.out.println();
+		
+		System.out.println("Total degree for " + w + " vertex : " + Graph.getVertexDegree(g3, w));
+		System.out.println("Total degree for " + x + " vertex : " + Graph.getVertexDegree(g3, x));
+		System.out.println("Total degree for " + y + " vertex : " + Graph.getVertexDegree(g3, y));
+		System.out.println("Total degree for " + z + " vertex : " + Graph.getVertexDegree(g3, z));
 		System.out.println();
 	}
 }

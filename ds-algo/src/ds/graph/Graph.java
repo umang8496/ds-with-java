@@ -548,6 +548,10 @@ public class Graph {
 		return inVertex;
 	}
 	
+	public static int getVertexDegree(Graph graph, GraphNode node) {
+		return (getVertexInDegree(graph, node) + getVertexOutDegree(graph, node));
+	}
+	
 	public static int getGraphDegree(Graph graph) {
 		return 0;
 	}
