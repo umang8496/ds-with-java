@@ -224,6 +224,8 @@ public class Graph {
 					System.out.print(n.getLabel() + " ");
 				}
 				System.out.println("]");
+			} else {
+				System.out.println("The Node " + node.getLabel() + " has a edges towards: [ ]");
 			}
 		}
 	}
@@ -246,6 +248,8 @@ public class Graph {
 					System.out.print(n.getTarget().getLabel() + "(" + n.getWeight() + ")" + " ");
 				}
 				System.out.println("]");
+			} else {
+				System.out.println("The Node " + node.getLabel() + " has a edges towards: [ ]");
 			}
 		}
 	}
