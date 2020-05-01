@@ -33,30 +33,57 @@ public class GraphInfo {
 		g2.displayAdjacencyList();
 		System.out.println();
 		
-		System.out.println("Vertex degree for " + a + " : " + Graph.getVertexDegree(g1, a));
-		System.out.println("Vertex degree for " + b + " : " + Graph.getVertexDegree(g1, b));
-		System.out.println("Vertex degree for " + c + " : " + Graph.getVertexDegree(g1, c));
-		System.out.println("Vertex degree for " + d + " : " + Graph.getVertexDegree(g1, d));
-		System.out.println("Vertex degree for " + e + " : " + Graph.getVertexDegree(g1, e));
-		System.out.println("Vertex degree for " + f + " : " + Graph.getVertexDegree(g1, f));
+		System.out.println("Out degree for " + a + " vertex : " + Graph.getVertexOutDegree(g1, a));
+		System.out.println("Out degree for " + b + " vertex : " + Graph.getVertexOutDegree(g1, b));
+		System.out.println("Out degree for " + c + " vertex : " + Graph.getVertexOutDegree(g1, c));
+		System.out.println("Out degree for " + d + " vertex : " + Graph.getVertexOutDegree(g1, d));
+		System.out.println("Out degree for " + e + " vertex : " + Graph.getVertexOutDegree(g1, e));
+		System.out.println("Out degree for " + f + " vertex : " + Graph.getVertexOutDegree(g1, f));
 		System.out.println();
 		
-		System.out.println("Vertex degree for " + p + " : " + Graph.getVertexDegree(g2, p));
-		System.out.println("Vertex degree for " + q + " : " + Graph.getVertexDegree(g2, q));
-		System.out.println("Vertex degree for " + r + " : " + Graph.getVertexDegree(g2, r));
-		System.out.println("Vertex degree for " + s + " : " + Graph.getVertexDegree(g2, s));
+		System.out.println("Out degree for " + p + " vertex : " + Graph.getVertexOutDegree(g2, p));
+		System.out.println("Out degree for " + q + " vertex : " + Graph.getVertexOutDegree(g2, q));
+		System.out.println("Out degree for " + r + " vertex : " + Graph.getVertexOutDegree(g2, r));
+		System.out.println("Out degree for " + s + " vertex : " + Graph.getVertexOutDegree(g2, s));
 		System.out.println();
 		
-//		Graph g3 = new Graph(true, true); 	// for directed graph
-//		GraphNode w = g3.addNode("W");
-//		GraphNode x = g3.addNode("X");
-//		GraphNode y = g3.addNode("Y");
-//		GraphNode z = g3.addNode("Z");
-//
-//		g3.connectNodes(w, x, 4);
-//		g3.connectNodes(w, y, 7);
-//		g3.connectNodes(y, z, 3);
-//		g3.connectNodes(z, x, 6);
-//		g3.displayAdjacencyListForWeightedNode();
+		System.out.println("In degree for " + a + " vertex : " + Graph.getVertexInDegree(g1, a));
+		System.out.println("In degree for " + b + " vertex : " + Graph.getVertexInDegree(g1, b));
+		System.out.println("In degree for " + c + " vertex : " + Graph.getVertexInDegree(g1, c));
+		System.out.println("In degree for " + d + " vertex : " + Graph.getVertexInDegree(g1, d));
+		System.out.println("In degree for " + e + " vertex : " + Graph.getVertexInDegree(g1, e));
+		System.out.println("In degree for " + f + " vertex : " + Graph.getVertexInDegree(g1, f));
+		System.out.println();
+		
+		System.out.println("In degree for " + p + " vertex : " + Graph.getVertexInDegree(g2, p));
+		System.out.println("In degree for " + q + " vertex : " + Graph.getVertexInDegree(g2, q));
+		System.out.println("In degree for " + r + " vertex : " + Graph.getVertexInDegree(g2, r));
+		System.out.println("In degree for " + s + " vertex : " + Graph.getVertexInDegree(g2, s));
+		System.out.println();
+		
+		Graph g3 = new Graph(true, true); 	// for directed graph
+		GraphNode w = g3.addNode("W");
+		GraphNode x = g3.addNode("X");
+		GraphNode y = g3.addNode("Y");
+		GraphNode z = g3.addNode("Z");
+
+		g3.connectNodes(w, x, 4);
+		g3.connectNodes(w, y, 7);
+		g3.connectNodes(y, z, 3);
+		g3.connectNodes(z, x, 6);
+		g3.displayAdjacencyListForWeightedNode();
+		System.out.println();
+		
+		System.out.println("Out degree for " + w + " vertex : " + Graph.getVertexOutDegree(g3, w));
+		System.out.println("Out degree for " + x + " vertex : " + Graph.getVertexOutDegree(g3, x));
+		System.out.println("Out degree for " + y + " vertex : " + Graph.getVertexOutDegree(g3, y));
+		System.out.println("Out degree for " + z + " vertex : " + Graph.getVertexOutDegree(g3, z));
+		System.out.println();
+		
+		System.out.println("In degree for " + w + " vertex : " + Graph.getVertexInDegree(g3, w));
+		System.out.println("In degree for " + x + " vertex : " + Graph.getVertexInDegree(g3, x));
+		System.out.println("In degree for " + y + " vertex : " + Graph.getVertexInDegree(g3, y));
+		System.out.println("In degree for " + z + " vertex : " + Graph.getVertexInDegree(g3, z));
+		System.out.println();
 	}
 }
