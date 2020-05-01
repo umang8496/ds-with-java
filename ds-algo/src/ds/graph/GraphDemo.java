@@ -93,6 +93,12 @@ public class GraphDemo {
 		g3.connectNodes(y, z, 3);
 		g3.connectNodes(z, x, 6);
 		g3.displayAdjacencyListForWeightedNode();
+		System.out.println();
+		
+		System.out.println("Graph Size for " + g1 + " : " + g1.getGraphSize());
+		System.out.println("Graph Size for " + g2 + " : " + g2.getGraphSize());
+		System.out.println("Graph Size for " + g3 + " : " + g3.getGraphSize());
+		System.out.println();
 	}
 	
 }

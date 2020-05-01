@@ -570,4 +570,8 @@ public class Graph {
 	private boolean _isGraphWeighted() {
 		return this.isWeighted;
 	}
+
+	public int getGraphSize() {
+		return this._getNodeKeySet().size();
+	}
 }
