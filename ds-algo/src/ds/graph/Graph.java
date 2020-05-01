@@ -495,46 +495,65 @@ public class Graph {
 		}
 	}
 	
-	public static int getVertexDegree(Graph graph, GraphNode node) {
+	public static int getVertexOutDegree(Graph graph, GraphNode node) {
 		List<GraphEdge> edgeList = null;
 		List<GraphNode> nodeList = null;
-		
-		if(graph._isGraphWeighted()) {
+
+		if (graph._isGraphWeighted()) {
 			edgeList = graph._getAssociatedWeightedNodeList(node);
 			nodeList = graph._convertEdgeListIntoNodeList(edgeList);
 		} else {
 			nodeList = graph._getAssociatedNodeList(node);
 		}
-		
-		if (nodeList != null){
+
+		if (nodeList != null) {
 			return nodeList.size();
 		} else {
 			return 0;
 		}
 	}
-	
-	public int getGraphDegree() {
-		return 0;
+
+	public static int getVertexInDegree(Graph graph, GraphNode node) {
+		int inVertex = 0;
+		
+		if (graph._isGraphWeighted()) {
+			Set<GraphNode> keySet = graph._getNodeKeySet();
+			Iterator<GraphNode> itr = keySet.iterator();
+			while (itr.hasNext()) {
+				List<GraphEdge> edgeList = graph._getAssociatedWeightedNodeList(itr.next());
+				if (edgeList != null) {
+					for (GraphEdge edge : edgeList) {
+						if(edge != null) {
+							if (edge.getTarget() == node) {
+								inVertex += 1;
+							}
+						}
+					}
+				}
+			}
+		} else {
+			List<GraphNode> nodeList = null;
+			Set<GraphNode> keySet = graph._getNodeKeySet();
+			Iterator<GraphNode> itr = keySet.iterator();
+			while (itr.hasNext()) {
+				nodeList = graph._getAssociatedNodeList(itr.next());
+				if (nodeList != null) {
+					if (nodeList.contains(node)) {
+						inVertex += 1;
+					}
+				}
+			}
+		}
+
+		return inVertex;
 	}
 	
-	public int getInDegreeOfVertex(GraphNode node) {
-		return 0;
-	}
-	
-	public int getOutDegreeOfVertex(GraphNode node) {
+	public static int getGraphDegree(Graph graph) {
 		return 0;
 	}
 	
 	public boolean isGraphConnected() {
 		return false;
-	}
-	
-	public int getNumberOfMutualNodesBetween(GraphNode A, GraphNode B) {
-		return 0;
-	}
-	
-	public List<GraphNode> getListOfMutualNodesBetween(GraphNode A, GraphNode B) {
-		return null;
 	}
 	
 	public static void connectIndependentNodes(GraphNode source, GraphNode target) {
