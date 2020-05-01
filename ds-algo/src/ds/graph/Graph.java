@@ -477,7 +477,19 @@ public class Graph {
 		}
 	}
 	
-	
+	private List<GraphNode> _convertEdgeListIntoNodeList(List<GraphEdge> edgeList) {
+		if (edgeList != null) {
+			Iterator<GraphEdge> iterator_for_edges = edgeList.iterator();
+			List<GraphNode> nodeList = new ArrayList<GraphNode>();
+			
+			while(iterator_for_edges.hasNext()){
+				nodeList.add(iterator_for_edges.next().getTarget());
+			}
+			return nodeList;
+		} else {
+			return null;
+		}
+	}
 	
 	public int getVertexDegree(GraphNode node) {
 		return 0;
