@@ -26,8 +26,6 @@ public class Graph {
 	private boolean isCyclic;
 	private boolean isDirected;
 	private boolean isWeighted;
-	
-	/* For Experimenting with Weighted Node */
 	private Map<GraphNode, List<GraphEdge>> adjacencyMapForWeightedNode;
 
 	// creates undirected graph always
@@ -553,11 +551,16 @@ public class Graph {
 	}
 	
 	public static int getGraphDegree(Graph graph) {
-		return 0;
-	}
-	
-	public boolean isGraphConnected() {
-		return false;
+		int graphDegree = 0;
+		Set<GraphNode> keySet = graph._getNodeKeySet();
+		Iterator<GraphNode> itr = keySet.iterator();
+		while (itr.hasNext()) {
+			int vertexDegree = getVertexDegree(graph, itr.next());
+			if(vertexDegree > graphDegree) {
+				graphDegree = vertexDegree;
+			}
+		}
+		return graphDegree;
 	}
 	
 	public static void connectIndependentNodes(GraphNode source, GraphNode target) {
