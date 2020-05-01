@@ -495,8 +495,22 @@ public class Graph {
 		}
 	}
 	
-	public int getVertexDegree(GraphNode node) {
-		return 0;
+	public static int getVertexDegree(Graph graph, GraphNode node) {
+		List<GraphEdge> edgeList = null;
+		List<GraphNode> nodeList = null;
+		
+		if(graph._isGraphWeighted()) {
+			edgeList = graph._getAssociatedWeightedNodeList(node);
+			nodeList = graph._convertEdgeListIntoNodeList(edgeList);
+		} else {
+			nodeList = graph._getAssociatedNodeList(node);
+		}
+		
+		if (nodeList != null){
+			return nodeList.size();
+		} else {
+			return 0;
+		}
 	}
 	
 	public int getGraphDegree() {
