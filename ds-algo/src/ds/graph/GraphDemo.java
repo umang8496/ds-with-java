@@ -95,6 +95,16 @@ public class GraphDemo {
 		g3.displayAdjacencyListForWeightedNode();
 		System.out.println();
 		
+		g3.breadthFirstSearch();
+		System.out.println();
+		g3.unvisitEveryNode();
+		g3.depthFirstSearch();
+		System.out.println();
+		
+		System.out.println("Is there an edge in " + g3 + " from w to x " + g3.hasEdge(w, x));
+		System.out.println("Is there an edge in " + g3 + " from x to y " + g3.hasEdge(x, y));
+		System.out.println();
+		
 		System.out.println("Graph Size for " + g1 + " : " + g1.getGraphSize());
 		System.out.println("Graph Size for " + g2 + " : " + g2.getGraphSize());
 		System.out.println("Graph Size for " + g3 + " : " + g3.getGraphSize());
