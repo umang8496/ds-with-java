@@ -290,6 +290,41 @@ public class MinimumSpanningTree {
 		}
 		return ret_edge;
 	}
+
+	private MinimumSpanningTree _createGraphFromEdges(MinimumSpanningTree prims, Set<GraphEdge> edgeSet) {
+		for (GraphEdge edge : edgeSet) {
+			prims.mstCost += edge.getWeight(); 
+			prims = this._connectWeightedNodes(prims, edge);
+		}
+		return prims;
+	}
+	
+	private MinimumSpanningTree _connectWeightedNodes(MinimumSpanningTree prims, GraphEdge edge) {
+		if (prims != null && edge != null) {
+			prims.nodeKeySet.add(edge.getSource());
+			List<GraphEdge> edgeList = null;
+			List<GraphEdge> reverseEdgeList = null;
+			
+			if(prims.adjacencyMapForWeightedNode.containsKey(edge.getSource())) {
+				edgeList = prims.adjacencyMapForWeightedNode.get(edge.getSource());				
+			} else {
+				edgeList = new ArrayList<GraphEdge>();
+			}
+			edgeList.add(edge);
+			prims.adjacencyMapForWeightedNode.put(edge.getSource(), edgeList);
+			
+			if(prims.adjacencyMapForWeightedNode.containsKey(edge.getTarget())) {
+				reverseEdgeList = prims.adjacencyMapForWeightedNode.get(edge.getTarget());				
+			} else {
+				reverseEdgeList = new ArrayList<GraphEdge>();
+			}
+			
+			GraphEdge reverse_edge = this._getEdgeWithWeigth(edge.getTarget(), edge.getSource(), edge.getWeight());
+			reverseEdgeList.add(reverse_edge);
+			prims.adjacencyMapForWeightedNode.put(edge.getTarget(), reverseEdgeList);			
+		}
+		return prims;
+	}
 	
 	public int getMstCost() {
 		return this.mstCost;
