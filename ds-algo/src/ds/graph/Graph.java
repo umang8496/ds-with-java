@@ -322,7 +322,11 @@ public class Graph {
 			return;
 		} else {
 			System.out.println("BFS Traversal for " + this);
-			this._bfsTraversal(node);
+			if (this._isGraphWeighted()) {
+				this._bfsTraversalForWeightedGraph(node);
+			} else {
+				this._bfsTraversal(node);
+			}
 		}
 	}
 
@@ -362,6 +366,31 @@ public class Graph {
 				for (GraphNode associatedNode : nodeList) {
 					if (!associatedNode.isVisited()) {
 						queue.add(associatedNode);
+					}
+				}
+			}
+		}
+	}
+
+	private void _bfsTraversalForWeightedGraph(GraphNode node) {
+		Queue<GraphNode> queue = new LinkedList<>();
+		queue.add(node);
+
+		while (!queue.isEmpty()) {
+			GraphNode tmpNode = queue.remove();
+
+			if (!tmpNode.isVisited()) {
+				System.out.println("Visiting : [ " + tmpNode.getLabel() + " ]");
+				tmpNode.visit();
+			} else {
+				continue;
+			}
+
+			List<GraphEdge> edgeList = this._getAssociatedWeightedNodeList(tmpNode);
+			if (edgeList != null) {
+				for (GraphEdge edge : edgeList) {
+					if (!edge.getSource().isVisited()) {
+						queue.add(edge.getSource());
 					}
 				}
 			}
