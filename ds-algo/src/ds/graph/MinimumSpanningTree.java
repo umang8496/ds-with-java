@@ -203,5 +203,96 @@ public class MinimumSpanningTree {
 			}
 		}
 	}
+
 	
+	
+	/**
+	 * Prim's algorithm is an MST algorithm that takes a graph as input and finds the subset of the edges of that graph which
+	 * form a tree that includes every vertex
+	 * has the minimum sum of weights among all the trees that can be formed from the graph
+	 * 
+	 * It falls under greedy algorithms which finds the local optimum in the hopes of finding a global optimum subsequently.
+	 * We start from one vertex and keep adding edges with the lowest weight until we we reach our goal.
+	 * 
+	 * The steps for implementing Prim's algorithm are as follows:
+	 * --> Initialize the minimum spanning tree with a vertex chosen at random.
+	 * --> Find all the edges that connect the tree to new vertices, find the minimum and add it to the tree
+	 * --> Keep repeating step 2 until we get a minimum spanning tree
+	 * 
+	 **/
+	@SuppressWarnings("unchecked")
+	public MinimumSpanningTree getPrimsMinimumSpanningTree() {
+		MinimumSpanningTree prims = new MinimumSpanningTree(false, true);
+		
+		Set<GraphNode> nodeSet = new HashSet<GraphNode>();
+		Set<GraphEdge> edgeSet = new HashSet<GraphEdge>();
+		int nodeCount = 0;
+		
+		// select a random node from the given graph
+		GraphNode firstVertex = this._getFirstKeyFromSet();
+
+		// put that node into the list of visited nodes
+		nodeSet.add(firstVertex);
+		firstVertex.visit();
+		nodeCount++;
+		
+		// select the minimum weighted edge from that node and put it into the list of edges
+		while (nodeCount != this.getGraphSize()) {
+			Object[] ob = _selectMinWeightEdgeFromNodeSet(nodeSet, edgeSet);
+			nodeSet = (Set<GraphNode>) ob[0];
+			edgeSet = (Set<GraphEdge>) ob[1];
+			nodeCount = nodeSet.size();
+		}
+		
+		return this._createGraphFromEdges(prims, edgeSet);
+	}
+
+	private Object[] _selectMinWeightEdgeFromNodeSet(Set<GraphNode> nodeSet, Set<GraphEdge> edgeSet) {
+		int minWeight = Integer.MAX_VALUE;
+		GraphEdge edge = null;
+
+		for (GraphNode node : nodeSet) {
+			GraphEdge edgeWithMinWeight = this._getTheNodeWithMinWeight(node);
+			if (edgeWithMinWeight == null) {
+				continue;
+			} else {
+				if (edgeWithMinWeight.getWeight() < minWeight) {
+					minWeight = edgeWithMinWeight.getWeight();
+					edge = edgeWithMinWeight;
+				}
+			}
+		}		
+		
+		if(edge != null) {
+			GraphNode nextNode = edge.getTarget();
+			if (!nodeSet.contains(nextNode)) {
+				nodeSet.add(nextNode);
+				nextNode.visit();
+				edgeSet.add(edge);
+			}
+		}
+		return new Object[] { nodeSet, edgeSet };
+	}
+
+	private GraphEdge _getTheNodeWithMinWeight(GraphNode node) {
+		int minWeight = Integer.MAX_VALUE;
+		GraphEdge ret_edge = null;
+		List<GraphEdge> edgeList = this._getAssociatedWeightedNodeList(node);
+		for (GraphEdge edge : edgeList) {
+			if(edge.getTarget().isVisited()) {
+				continue;
+			} else {
+				if (edge.getWeight() < minWeight) {
+					minWeight = edge.getWeight();
+					ret_edge = edge;
+				}
+			}
+		}
+		return ret_edge;
+	}
+	
+	public int getMstCost() {
+		return this.mstCost;
+	}
+
 }
