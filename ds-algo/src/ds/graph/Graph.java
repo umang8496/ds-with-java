@@ -398,10 +398,18 @@ public class Graph {
 	}
 
 	public boolean hasEdge(GraphNode source, GraphNode target) {
-		if (source != null && target != null) {
-			return this._hasEdge(source, target);
+		if (this._isGraphWeighted()) {
+			if (source != null && target != null) {
+				return this._hasEdgeBetweenWeightedNodes(source, target);
+			} else {
+				return false;
+			}
 		} else {
-			return false;
+			if (source != null && target != null) {
+				return this._hasEdge(source, target);
+			} else {
+				return false;
+			}
 		}
 	}
 
@@ -413,6 +421,21 @@ public class Graph {
 		} else {
 			return false;
 		}
+	}
+
+	private boolean _hasEdgeBetweenWeightedNodes(GraphNode source, GraphNode target) {
+		boolean isSourceNodeAvaiable = this._isPresentInGraph(source);
+		if (isSourceNodeAvaiable) {
+			List<GraphEdge> edgeList = this._getAssociatedWeightedNodeList(source);
+			if (edgeList != null) {
+				for (GraphEdge edge : edgeList) {
+					if (edge.getSource() == source && edge.getTarget() == target) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
 	}
 
 	private List<GraphNode> _getAssociatedNodeList(GraphNode currentNode) {
