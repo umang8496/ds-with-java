@@ -273,7 +273,11 @@ public class Graph {
 			return;
 		} else {
 			System.out.println("DFS Traversal for " + this);
-			this._dfsTraversal(node);
+			if (this._isGraphWeighted()) {
+				this._dfsTraversalForWeightedGraph(node);
+			} else {
+				this._dfsTraversal(node);
+			}
 		}
 	}
 
@@ -284,11 +288,27 @@ public class Graph {
 		}
 
 		List<GraphNode> nodeList = this._getAssociatedNodeList(node);
-
 		if (nodeList != null) {
 			for (GraphNode associatedNode : nodeList) {
 				if (associatedNode != null && !associatedNode.isVisited()) {
 					this._dfsTraversal(associatedNode);
+				}
+			}
+		} else {
+			return;
+		}
+	}
+	
+	private void _dfsTraversalForWeightedGraph(GraphNode node) {
+		if (!node.isVisited()) {
+			System.out.println("Visiting : [ " + node.getLabel() + " ]");
+			node.visit();
+		}
+		List<GraphEdge> edgeList = this._getAssociatedWeightedNodeList(node);
+		if (edgeList != null) {
+			for (GraphEdge edge : edgeList) {
+				if (edge != null && !edge.getSource().isVisited()) {
+					this._dfsTraversal(edge.getSource());
 				}
 			}
 		} else {
