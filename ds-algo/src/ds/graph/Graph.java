@@ -268,7 +268,7 @@ public class Graph {
 	}
 
 	public void depthFirstSearch() {
-		GraphNode node = this._getFirstKeyFromMap();
+		GraphNode node = this._getFirstKeyFromSet();
 		if (node == null) {
 			return;
 		} else {
@@ -297,7 +297,7 @@ public class Graph {
 	}
 
 	public void breadthFirstSearch() {
-		GraphNode node = this._getFirstKeyFromMap();
+		GraphNode node = this._getFirstKeyFromSet();
 		if (node == null) {
 			return;
 		} else {
@@ -306,7 +306,7 @@ public class Graph {
 		}
 	}
 
-	private GraphNode _getFirstKeyFromMap() {
+	private GraphNode _getFirstKeyFromSet() {
 		if (this._getNodeKeySet().isEmpty()) {
 			return null;
 		} else {
