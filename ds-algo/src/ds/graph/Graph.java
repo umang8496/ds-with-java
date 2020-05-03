@@ -14,80 +14,96 @@ import java.util.Stack;
 import java.util.stream.Stream;
 
 import ds.exp.CyclicGraphException;
+import ds.exp.GraphNotFoundException;
 import ds.exp.IncompatibleGraphTypeException;
 import ds.exp.NoSuchNodeException;
 import ds.exp.NodeCreationException;
 import ds.exp.NullNodeException;
 
 public class Graph {
-	private int numberOfNodes;
-	private Map<GraphNode, List<GraphNode>> adjacencyMap;
-	private Set<GraphNode> nodeKeySet;
+	private Set<GraphNode> nodeKeySet = null;
 	private boolean isCyclic;
 	private boolean isDirected;
 	private boolean isWeighted;
-	private Map<GraphNode, List<GraphEdge>> adjacencyMapForWeightedNode;
+	private Map<GraphNode, List<GraphEdge>> adjacencyMapForGraph = null;
 
-	// creates undirected graph always
+	/**
+	 * Creates an undirected Graph object.
+	 */
 	public Graph() {
 		this.isDirected = false;
-		this.numberOfNodes = 0;
-		this.adjacencyMap = new HashMap<>();
 		this.nodeKeySet = new LinkedHashSet<>();
 		this.isCyclic = false;
 		this.isWeighted = false;
 	}
 
-	// creates directed/undirected graph based on the boolean value
-	// for directed graph:		true
-	// for undirected graph:	false
+	/**
+	 * Creates a Graph object with specified type of graph.
+	 * 
+	 * @param isDirected,
+	 *            if true then graph is directed otherwise undirected
+	 */
 	public Graph(boolean isDirected) {
 		super();
 		this.isDirected = isDirected;
-		this.numberOfNodes = 0;
-		this.adjacencyMap = new HashMap<>();
 		this.nodeKeySet = new LinkedHashSet<>();
 		this.isCyclic = false;
 		this.isWeighted = false;
+		this.adjacencyMapForGraph = new HashMap<>();
 	}
-	
-	// creates the weighted graph if isWeighted is true
+
+	/**
+	 * Creates a Graph object with specified type of graph.
+	 * 
+	 * @param isDirected,
+	 *            if true then graph is directed otherwise undirected
+	 * @param isWeighted,
+	 *            if true then graph is weighted otherwise unweighted
+	 */
 	public Graph(boolean isDirected, boolean isWeighted) {
 		super();
 		this.isDirected = isDirected;
-		this.numberOfNodes = 0;		
 		this.nodeKeySet = new LinkedHashSet<>();
 		this.isCyclic = false;
 		this.isWeighted = isWeighted;
-		if(isWeighted == false) {
-			this.adjacencyMap = new HashMap<>();
-		} else {
-			this.adjacencyMapForWeightedNode = new HashMap<>();
-		}
+		this.adjacencyMapForGraph = new HashMap<>();
 	}
 
+	/**
+	 * Creates a GraphNode and puts it into the key-set.
+	 * 
+	 * @param index
+	 * @param label
+	 * @return GraphNode
+	 * @throws NodeCreationException
+	 */
 	public GraphNode addNode(int index, String label) throws NodeCreationException {
 		GraphNode node = this._createNode(index, label);
 		if (node == null) {
 			throw new NodeCreationException("unable to create a graph node");
 		} else {
-			this._updateNodeCount();
 			this._updateNodeKeySet(node);
 			return node;
 		}
 	}
 
+	/**
+	 * Creates a GraphNode and puts it into the key-set.
+	 * 
+	 * @param label
+	 * @return GraphNode
+	 * @throws NodeCreationException
+	 */
 	public GraphNode addNode(String label) throws NodeCreationException {
 		GraphNode node = this._createNode(label);
 		if (node == null) {
 			throw new NodeCreationException("unable to create a graph node");
 		} else {
-			this._updateNodeCount();
 			this._updateNodeKeySet(node);
 			return node;
 		}
 	}
-	
+
 	private GraphNode _createNode(int index, String label) {
 		return new GraphNode(index, label);
 	}
@@ -96,14 +112,17 @@ public class Graph {
 		return new GraphNode(label);
 	}
 
-	private void _updateNodeCount() {
-		this.numberOfNodes += 1;
-	}
-
 	private void _updateNodeKeySet(GraphNode node) {
 		this.nodeKeySet.add(node);
 	}
 
+	/**
+	 * Connects nodes of an unweighted graph
+	 * 
+	 * @param source
+	 * @param target
+	 * @throws NoSuchNodeException
+	 */
 	public void connectNodes(GraphNode source, GraphNode target) throws NoSuchNodeException {
 		if (source != null && target != null) {
 			if (source == target) {
@@ -112,7 +131,10 @@ public class Graph {
 			}
 
 			if (this._isPresentInGraph(source) && this._isPresentInGraph(target)) {
-				this._createEdge(source, target);
+				GraphEdge edge = this._getNewEdge(source, target, null);
+				if (edge != null) {
+					this._createEdge(edge);
+				}
 			} else {
 				if (!this._isPresentInGraph(source)) {
 					throw new NoSuchNodeException(source + " is not found in the graph instance.");
@@ -122,13 +144,22 @@ public class Graph {
 			}
 
 			if (this.isTheGraphUndirected()) {
-				this._createEdge(target, source);
+				GraphEdge complementary_edge = this._getNewEdge(target, source, null);
+				this._createEdge(complementary_edge);
 			}
 		} else {
 			throw new NullNodeException("node cannot be connected");
 		}
 	}
 
+	/**
+	 * Connects nodes of a weighted graph
+	 * 
+	 * @param source
+	 * @param target
+	 * @param weight
+	 * @throws NoSuchNodeException
+	 */
 	public void connectNodes(GraphNode source, GraphNode target, Integer weight) throws NoSuchNodeException {
 		if (this._isGraphWeighted()) {
 			if (source != null && target != null && weight != null) {
@@ -136,11 +167,11 @@ public class Graph {
 					// then this graph is cyclic
 					this.isCyclic = true;
 				}
-				
+
 				if (this._isPresentInGraph(source) && this._isPresentInGraph(target)) {
-					GraphEdge edge = this._getEdgeWithWeigth(source, target, weight);
+					GraphEdge edge = this._getNewEdge(source, target, weight);
 					if (edge != null) {
-						this._createEdgeWithWeigth(edge);
+						this._createEdge(edge);
 					}
 				} else {
 					if (!this._isPresentInGraph(source)) {
@@ -149,10 +180,10 @@ public class Graph {
 						throw new NoSuchNodeException(target + " is not found in the graph instance.");
 					}
 				}
-	
+
 				if (this.isTheGraphUndirected()) {
-					GraphEdge complementary_edge = this._getEdgeWithWeigth(target, source, weight);
-					this._createEdgeWithWeigth(complementary_edge);
+					GraphEdge complementary_edge = this._getNewEdge(target, source, weight);
+					this._createEdge(complementary_edge);
 				}
 			} else {
 				throw new NullNodeException("node cannot be connected");
@@ -161,26 +192,13 @@ public class Graph {
 			throw new IncompatibleGraphTypeException("Unweighted graph cannot have weights.");
 		}
 	}
-	
-	private void _createEdge(GraphNode source, GraphNode target) {
-		List<GraphNode> tmpList = this.adjacencyMap.get(source);
 
-		if (tmpList != null) {
-			tmpList.remove(target);
-		} else {
-			tmpList = new LinkedList<>();
-		}
-
-		tmpList.add(target);
-		this.adjacencyMap.put(source, tmpList);
-	}
-	
-	private GraphEdge _getEdgeWithWeigth(GraphNode source, GraphNode target, Integer weight) {
+	private GraphEdge _getNewEdge(GraphNode source, GraphNode target, Integer weight) {
 		return new GraphEdge(source, target, weight);
 	}
-	
-	private void _createEdgeWithWeigth(GraphEdge edge) {
-		List<GraphEdge> tmpEdgeList = this.adjacencyMapForWeightedNode.get(edge.getSource());
+
+	private void _createEdge(GraphEdge edge) {
+		List<GraphEdge> tmpEdgeList = this.adjacencyMapForGraph.get(edge.getSource());
 
 		if (tmpEdgeList != null) {
 			tmpEdgeList.remove(edge);
@@ -189,13 +207,13 @@ public class Graph {
 		}
 
 		tmpEdgeList.add(edge);
-		this.adjacencyMapForWeightedNode.put(edge.getSource(), tmpEdgeList);
+		this.adjacencyMapForGraph.put(edge.getSource(), tmpEdgeList);
 	}
-	
+
 	private boolean _isPresentInGraph(GraphNode node) {
 		return this.nodeKeySet.contains(node);
 	}
-	
+
 	public boolean isTheGraphDirected() {
 		return this.isDirected;
 	}
@@ -204,22 +222,36 @@ public class Graph {
 		return !this.isDirected;
 	}
 
+	/**
+	 * Prints/Displays the entire adjacency-list representation of a graph.
+	 * 
+	 * @throws GraphNotFoundException
+	 */
+	@SuppressWarnings("unused")
 	public void displayAdjacencyList() {
-		System.out.println("Adjacency List for " + this);
-		this._displayAdjacencyList();
-		System.out.println();
+		if (this != null) {
+			System.out.println("Adjacency List for " + this);
+			this._displayAdjacencyList();
+			System.out.println();
+		} else {
+			throw new GraphNotFoundException("Graph is null or empty.");
+		}
 	}
 
 	private void _displayAdjacencyList() {
 		Iterator<GraphNode> itr = this._getNodeKeySet().iterator();
 		while (itr.hasNext()) {
 			GraphNode node = itr.next();
-			List<GraphNode> tmp = this.adjacencyMap.get(node);
+			List<GraphEdge> tmp = this.adjacencyMapForGraph.get(node);
 
 			if (tmp != null) {
 				System.out.print("The Node " + node.getLabel() + " has a edges towards: [ ");
-				for (GraphNode n : tmp) {
-					System.out.print(n.getLabel() + " ");
+				for (GraphEdge edge : tmp) {
+					if (edge.getWeight() != null) {
+						System.out.print(edge.getTarget().getLabel() + "(" + edge.getWeight() + ")" + " ");
+					} else {
+						System.out.print(edge.getTarget().getLabel() + " ");
+					}
 				}
 				System.out.println("]");
 			} else {
@@ -228,38 +260,13 @@ public class Graph {
 		}
 	}
 
-	public void displayAdjacencyListForWeightedNode() {
-		System.out.println("Adjacency List for Weighted Node " + this);
-		this._displayAdjacencyListForWeightedNode();
-		System.out.println();
-	}
-	
-	private void _displayAdjacencyListForWeightedNode() {
-		Iterator<GraphNode> itr = this._getNodeKeySet().iterator();
-		while (itr.hasNext()) {
-			GraphNode node = itr.next();
-			List<GraphEdge> tmp = this.adjacencyMapForWeightedNode.get(node);
-
-			if (tmp != null) {
-				System.out.print("The Node " + node.getLabel() + " has a edges towards: [ ");
-				for (GraphEdge n : tmp) {
-					System.out.print(n.getTarget().getLabel() + "(" + n.getWeight() + ")" + " ");
-				}
-				System.out.println("]");
-			} else {
-				System.out.println("The Node " + node.getLabel() + " has a edges towards: [ ]");
-			}
-		}
-	}
-	
 	private Set<GraphNode> _getNodeKeySet() {
 		return this.nodeKeySet;
 	}
 
-	public int getNumberOfNodes() {
-		return numberOfNodes;
-	}
-
+	/**
+	 * Un-visit every node in the graph for revisiting them.
+	 */
 	public void unvisitEveryNode() {
 		Iterator<GraphNode> itr = this._getNodeKeySet().iterator();
 		while (itr.hasNext()) {
@@ -267,17 +274,16 @@ public class Graph {
 		}
 	}
 
+	/**
+	 * Prints/Displays the DFS representation of a graph.
+	 */
 	public void depthFirstSearch() {
 		GraphNode node = this._getFirstKeyFromSet();
 		if (node == null) {
 			return;
 		} else {
 			System.out.println("DFS Traversal for " + this);
-			if (this._isGraphWeighted()) {
-				this._dfsTraversalForWeightedGraph(node);
-			} else {
-				this._dfsTraversal(node);
-			}
+			this._dfsTraversal(node);
 		}
 	}
 
@@ -286,25 +292,7 @@ public class Graph {
 			System.out.println("Visiting : [ " + node.getLabel() + " ]");
 			node.visit();
 		}
-
-		List<GraphNode> nodeList = this._getAssociatedNodeList(node);
-		if (nodeList != null) {
-			for (GraphNode associatedNode : nodeList) {
-				if (associatedNode != null && !associatedNode.isVisited()) {
-					this._dfsTraversal(associatedNode);
-				}
-			}
-		} else {
-			return;
-		}
-	}
-	
-	private void _dfsTraversalForWeightedGraph(GraphNode node) {
-		if (!node.isVisited()) {
-			System.out.println("Visiting : [ " + node.getLabel() + " ]");
-			node.visit();
-		}
-		List<GraphEdge> edgeList = this._getAssociatedWeightedNodeList(node);
+		List<GraphEdge> edgeList = this._getAssociatedNodeList(node);
 		if (edgeList != null) {
 			for (GraphEdge edge : edgeList) {
 				if (edge != null && !edge.getSource().isVisited()) {
@@ -316,16 +304,40 @@ public class Graph {
 		}
 	}
 
+	/**
+	 * Prints/Displays the BFS representation of a graph.
+	 */
 	public void breadthFirstSearch() {
 		GraphNode node = this._getFirstKeyFromSet();
 		if (node == null) {
 			return;
 		} else {
 			System.out.println("BFS Traversal for " + this);
-			if (this._isGraphWeighted()) {
-				this._bfsTraversalForWeightedGraph(node);
+			this._bfsTraversal(node);
+		}
+	}
+
+	private void _bfsTraversal(GraphNode node) {
+		Queue<GraphNode> queue = new LinkedList<>();
+		queue.add(node);
+
+		while (!queue.isEmpty()) {
+			GraphNode tmpNode = queue.remove();
+
+			if (!tmpNode.isVisited()) {
+				System.out.println("Visiting : [ " + tmpNode.getLabel() + " ]");
+				tmpNode.visit();
 			} else {
-				this._bfsTraversal(node);
+				continue;
+			}
+
+			List<GraphEdge> edgeList = this._getAssociatedNodeList(tmpNode);
+			if (edgeList != null) {
+				for (GraphEdge edge : edgeList) {
+					if (!edge.getSource().isVisited()) {
+						queue.add(edge.getSource());
+					}
+				}
 			}
 		}
 	}
@@ -347,86 +359,25 @@ public class Graph {
 		}
 	}
 
-	private void _bfsTraversal(GraphNode node) {
-		Queue<GraphNode> queue = new LinkedList<>();
-		queue.add(node);
-
-		while (!queue.isEmpty()) {
-			GraphNode tmpNode = queue.remove();
-
-			if (!tmpNode.isVisited()) {
-				System.out.println("Visiting : [ " + tmpNode.getLabel() + " ]");
-				tmpNode.visit();
-			} else {
-				continue;
-			}
-
-			List<GraphNode> nodeList = this._getAssociatedNodeList(tmpNode);
-			if (nodeList != null) {
-				for (GraphNode associatedNode : nodeList) {
-					if (!associatedNode.isVisited()) {
-						queue.add(associatedNode);
-					}
-				}
-			}
-		}
-	}
-
-	private void _bfsTraversalForWeightedGraph(GraphNode node) {
-		Queue<GraphNode> queue = new LinkedList<>();
-		queue.add(node);
-
-		while (!queue.isEmpty()) {
-			GraphNode tmpNode = queue.remove();
-
-			if (!tmpNode.isVisited()) {
-				System.out.println("Visiting : [ " + tmpNode.getLabel() + " ]");
-				tmpNode.visit();
-			} else {
-				continue;
-			}
-
-			List<GraphEdge> edgeList = this._getAssociatedWeightedNodeList(tmpNode);
-			if (edgeList != null) {
-				for (GraphEdge edge : edgeList) {
-					if (!edge.getSource().isVisited()) {
-						queue.add(edge.getSource());
-					}
-				}
-			}
-		}
-	}
-
+	/**
+	 * Check if two GraphNode objects are connected through a GraphEdge.
+	 * 
+	 * @param source
+	 * @param target
+	 * @return boolean
+	 */
 	public boolean hasEdge(GraphNode source, GraphNode target) {
-		if (this._isGraphWeighted()) {
-			if (source != null && target != null) {
-				return this._hasEdgeBetweenWeightedNodes(source, target);
-			} else {
-				return false;
-			}
+		if (source != null && target != null) {
+			return this._hasEdge(source, target);
 		} else {
-			if (source != null && target != null) {
-				return this._hasEdge(source, target);
-			} else {
-				return false;
-			}
+			return false;
 		}
 	}
 
 	private boolean _hasEdge(GraphNode source, GraphNode target) {
 		boolean isSourceNodeAvaiable = this._isPresentInGraph(source);
 		if (isSourceNodeAvaiable) {
-			List<GraphNode> nodeList = this._getAssociatedNodeList(source);
-			return nodeList != null ? nodeList.contains(target) : false;
-		} else {
-			return false;
-		}
-	}
-
-	private boolean _hasEdgeBetweenWeightedNodes(GraphNode source, GraphNode target) {
-		boolean isSourceNodeAvaiable = this._isPresentInGraph(source);
-		if (isSourceNodeAvaiable) {
-			List<GraphEdge> edgeList = this._getAssociatedWeightedNodeList(source);
+			List<GraphEdge> edgeList = this._getAssociatedNodeList(source);
 			if (edgeList != null) {
 				for (GraphEdge edge : edgeList) {
 					if (edge.getSource() == source && edge.getTarget() == target) {
@@ -438,12 +389,8 @@ public class Graph {
 		return false;
 	}
 
-	private List<GraphNode> _getAssociatedNodeList(GraphNode currentNode) {
-		return this.adjacencyMap.get(currentNode);
-	}
-	
-	private List<GraphEdge> _getAssociatedWeightedNodeList(GraphNode currentNode) {
-		return this.adjacencyMapForWeightedNode.get(currentNode);
+	private List<GraphEdge> _getAssociatedNodeList(GraphNode currentNode) {
+		return this.adjacencyMapForGraph.get(currentNode);
 	}
 
 	public boolean isGraphCyclic() {
@@ -454,19 +401,14 @@ public class Graph {
 		return !this.isCyclic;
 	}
 
+	/**
+	 * Performs the topological sorting of the nodes of a graph.
+	 */
 	public void performTopologicalSort() {
-		if(this._isGraphWeighted()) {
-			if (this.isGraphCyclic()) {
-				throw new CyclicGraphException("Topological sort cannot be performed.");
-			} else {
-				this._performTopologicalSortForWeightedGraph(this._getNodeKeySet());
-			}
+		if (this.isGraphCyclic()) {
+			throw new CyclicGraphException("Topological sort cannot be performed.");
 		} else {
-			if (this.isGraphCyclic()) {
-				throw new CyclicGraphException("Topological sort cannot be performed.");
-			} else {
-				this._performTopologicalSort(this._getNodeKeySet());
-			}
+			this._performTopologicalSort(this._getNodeKeySet());
 		}
 	}
 
@@ -474,89 +416,75 @@ public class Graph {
 		Stack<GraphNode> stackOfNodes = new Stack<>();
 		for (GraphNode node : keySet) {
 			if (node.unVisited()) {
-				this._topologicalVisit(node, stackOfNodes);
-			}
-		}
-		this._printTopologicalOrder(stackOfNodes);
-	}
-	
-	private void _performTopologicalSortForWeightedGraph(Set<GraphNode> keySet) {
-		Stack<GraphNode> stackOfNodes = new Stack<>();
-		for (GraphNode node : keySet) {
-			if (node.unVisited()) {
-				this._topologicalVisitForWeightedGraph(node, stackOfNodes);
+				this._topologicalVisitForNode(node, stackOfNodes);
 			}
 		}
 		this._printTopologicalOrder(stackOfNodes);
 	}
 
-	private void _topologicalVisit(GraphNode currentNode, Stack<GraphNode> stackOfNodes) {
-		List<GraphNode> associatedNodeList = this._getAssociatedNodeList(currentNode);
-
-		if (associatedNodeList != null) {
-			for (GraphNode associatedNode : associatedNodeList) {
-				if (associatedNode.unVisited()) {
-					this._topologicalVisit(associatedNode, stackOfNodes);
-				}
-			}
-		}
-		currentNode.visit();
-		stackOfNodes.push(currentNode);
-	}
-
-	private void _topologicalVisitForWeightedGraph(GraphNode currentNode, Stack<GraphNode> stackOfNodes) {
-		List<GraphEdge> associatedEdgeList = this._getAssociatedWeightedNodeList(currentNode);
+	private void _topologicalVisitForNode(GraphNode currentNode, Stack<GraphNode> stackOfNodes) {
+		List<GraphEdge> associatedEdgeList = this._getAssociatedNodeList(currentNode);
 		List<GraphNode> associatedNodeList = this._convertEdgeListIntoNodeList(associatedEdgeList);
 
 		if (associatedNodeList != null) {
 			for (GraphNode associatedNode : associatedNodeList) {
 				if (associatedNode.unVisited()) {
-					this._topologicalVisitForWeightedGraph(associatedNode, stackOfNodes);
+					this._topologicalVisitForNode(associatedNode, stackOfNodes);
 				}
 			}
 		}
 		currentNode.visit();
 		stackOfNodes.push(currentNode);
 	}
-	
+
 	private void _printTopologicalOrder(Stack<GraphNode> stack) {
 		while (!stack.isEmpty()) {
 			System.out.print(stack.pop().getLabel() + " ");
 		}
 	}
 
+	/**
+	 * Removes a GraphNode object from the Graph
+	 * 
+	 * @param node
+	 */
 	public void removeGraphNode(GraphNode node) {
 		if (node != null) {
 			if (this._isPresentInGraph(node)) {
 				System.out.println("Removing node " + node + " from graph " + this);
-				this._removeVertex(node);
+				this._removeGraphNode(node);
 			}
 		}
 	}
 
-	private void _removeVertex(GraphNode node) {
-		GraphNode node_to_be_removed = node;
-
+	private void _removeGraphNode(GraphNode node) {
 		if (this._getNodeKeySet().contains(node)) {
 			this._getNodeKeySet().remove(node);
 		}
 
 		Set<GraphNode> setOfKeys = this._getNodeKeySet();
 		Iterator<GraphNode> itr = setOfKeys.iterator();
+
 		while (itr.hasNext()) {
 			GraphNode key = (GraphNode) itr.next();
-			List<GraphNode> list = this._getAssociatedNodeList(key);
-			if (list.contains(node_to_be_removed))
-				list.remove(node_to_be_removed);
+			List<GraphEdge> edgeList = this._getAssociatedNodeList(key);
+			Iterator<GraphEdge> itr_edge = edgeList.iterator();
+
+			while (itr_edge.hasNext()) {
+				GraphEdge edge = itr_edge.next();
+				if (edge.getTarget() == node) {
+					edgeList.remove(edge);
+				}
+			}
 		}
 	}
-	
+
 	private List<GraphNode> _convertEdgeListIntoNodeList(List<GraphEdge> edgeList) {
 		if (edgeList != null) {
 			Iterator<GraphEdge> iterator_for_edges = edgeList.iterator();
 			List<GraphNode> nodeList = new ArrayList<GraphNode>();
-			
-			while(iterator_for_edges.hasNext()){
+
+			while (iterator_for_edges.hasNext()) {
 				nodeList.add(iterator_for_edges.next().getTarget());
 			}
 			return nodeList;
@@ -564,17 +492,20 @@ public class Graph {
 			return null;
 		}
 	}
-	
+
+	/**
+	 * Calculates and returns the out-degree of a vertex.
+	 * 
+	 * @param graph
+	 * @param node
+	 * @return int
+	 */
 	public static int getVertexOutDegree(Graph graph, GraphNode node) {
 		List<GraphEdge> edgeList = null;
 		List<GraphNode> nodeList = null;
 
-		if (graph._isGraphWeighted()) {
-			edgeList = graph._getAssociatedWeightedNodeList(node);
-			nodeList = graph._convertEdgeListIntoNodeList(edgeList);
-		} else {
-			nodeList = graph._getAssociatedNodeList(node);
-		}
+		edgeList = graph._getAssociatedNodeList(node);
+		nodeList = graph._convertEdgeListIntoNodeList(edgeList);
 
 		if (nodeList != null) {
 			return nodeList.size();
@@ -583,66 +514,72 @@ public class Graph {
 		}
 	}
 
+	/**
+	 * Calculates and returns the in-degree of a vertex.
+	 * 
+	 * @param graph
+	 * @param node
+	 * @return int
+	 */
 	public static int getVertexInDegree(Graph graph, GraphNode node) {
 		int inVertex = 0;
-		
-		if (graph._isGraphWeighted()) {
-			Set<GraphNode> keySet = graph._getNodeKeySet();
-			Iterator<GraphNode> itr = keySet.iterator();
-			while (itr.hasNext()) {
-				List<GraphEdge> edgeList = graph._getAssociatedWeightedNodeList(itr.next());
-				if (edgeList != null) {
-					for (GraphEdge edge : edgeList) {
-						if(edge != null) {
-							if (edge.getTarget() == node) {
-								inVertex += 1;
-							}
+		Set<GraphNode> keySet = graph._getNodeKeySet();
+		Iterator<GraphNode> itr = keySet.iterator();
+		while (itr.hasNext()) {
+			List<GraphEdge> edgeList = graph._getAssociatedNodeList(itr.next());
+			if (edgeList != null) {
+				for (GraphEdge edge : edgeList) {
+					if (edge != null) {
+						if (edge.getTarget() == node) {
+							inVertex += 1;
 						}
 					}
 				}
 			}
-		} else {
-			List<GraphNode> nodeList = null;
-			Set<GraphNode> keySet = graph._getNodeKeySet();
-			Iterator<GraphNode> itr = keySet.iterator();
-			while (itr.hasNext()) {
-				nodeList = graph._getAssociatedNodeList(itr.next());
-				if (nodeList != null) {
-					if (nodeList.contains(node)) {
-						inVertex += 1;
-					}
-				}
-			}
 		}
-
 		return inVertex;
 	}
-	
+
+	/**
+	 * Calculates and returns the total degree (in + out) of a vertex.
+	 * 
+	 * @param graph
+	 * @param node
+	 * @return int
+	 */
 	public static int getVertexDegree(Graph graph, GraphNode node) {
 		return (getVertexInDegree(graph, node) + getVertexOutDegree(graph, node));
 	}
-	
+
+	/**
+	 * Calculates and returns the degree of a this Graph.
+	 * 
+	 * @param graph
+	 * @param node
+	 * @return int
+	 */
 	public static int getGraphDegree(Graph graph) {
 		int graphDegree = 0;
 		Set<GraphNode> keySet = graph._getNodeKeySet();
 		Iterator<GraphNode> itr = keySet.iterator();
 		while (itr.hasNext()) {
 			int vertexDegree = getVertexDegree(graph, itr.next());
-			if(vertexDegree > graphDegree) {
+			if (vertexDegree > graphDegree) {
 				graphDegree = vertexDegree;
 			}
 		}
 		return graphDegree;
 	}
-	
-	public static void connectIndependentNodes(GraphNode source, GraphNode target) {
-		
-	}
-	
+
 	private boolean _isGraphWeighted() {
 		return this.isWeighted;
 	}
 
+	/**
+	 * Gives the size of the graph i.e. # of GraphNode objects in Graph.
+	 * 
+	 * @return int
+	 */
 	public int getGraphSize() {
 		return this._getNodeKeySet().size();
 	}
