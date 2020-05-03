@@ -35,10 +35,6 @@ public class GraphDemo {
 		g2.connectNodes(p, r);
 		g2.connectNodes(r, s);
 		g2.connectNodes(s, q);
-
-		System.out.println("Number of nodes in the " + g1 + " : " + g1.getNumberOfNodes());
-		System.out.println("Number of nodes in the " + g2 + " : " + g2.getNumberOfNodes());
-		System.out.println();
 		
 		System.out.println("Is the graph g1 directed : " + g1.isTheGraphDirected());
 		System.out.println("Is the graph g2 directed : " + g2.isTheGraphDirected());
@@ -77,10 +73,6 @@ public class GraphDemo {
 		System.out.println("Is graph g2 " + g2 +" cyclic : " + g2.isGraphCyclic());
 		System.out.println();
 		
-		// GraphNode alpha = GraphNode.createIndependentNodes(10, "alpha");
-		// GraphNode beta  = GraphNode.createIndependentNodes(20, "beta" );
-		// GraphNode gamma = GraphNode.createIndependentNodes(30, "gamma");
-		
 		/** Test code for weighted graph **/
 		Graph g3 = new Graph(true, true);			// for directed graph
 		GraphNode w = g3.addNode("W");
@@ -92,7 +84,7 @@ public class GraphDemo {
 		g3.connectNodes(w, y, 7);
 		g3.connectNodes(y, z, 3);
 		g3.connectNodes(z, x, 6);
-		g3.displayAdjacencyListForWeightedNode();
+		g3.displayAdjacencyList();
 		System.out.println();
 		
 		g3.breadthFirstSearch();

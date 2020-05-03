@@ -56,13 +56,8 @@ public class TopologicalSortDemo {
 		// g2.connectNodes(r, s);
 		// g2.connectNodes(s, q);
 		
-		System.out.println("Number of nodes in the " + g1 + " : " + g1.getNumberOfNodes());
-		System.out.println("Number of nodes in the " + g2 + " : " + g2.getNumberOfNodes());
-		System.out.println();
-		
 		g1.displayAdjacencyList();
-		// g2.displayAdjacencyList();
-		g2.displayAdjacencyListForWeightedNode();
+		g2.displayAdjacencyList();
 		System.out.println();
 		
 		try {

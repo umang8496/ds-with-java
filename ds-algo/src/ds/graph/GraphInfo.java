@@ -91,7 +91,7 @@ public class GraphInfo {
 		g3.connectNodes(w, y, 7);
 		g3.connectNodes(y, z, 3);
 		g3.connectNodes(z, x, 6);
-		g3.displayAdjacencyListForWeightedNode();
+		g3.displayAdjacencyList();
 		System.out.println();
 		
 		System.out.println("Out degree for " + w + " vertex : " + Graph.getVertexOutDegree(g3, w));
