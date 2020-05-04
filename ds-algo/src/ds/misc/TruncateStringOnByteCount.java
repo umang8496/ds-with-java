@@ -24,7 +24,7 @@ public class TruncateStringOnByteCount {
 		System.out.println("Truncate str03 beyond 30 bytes: " + truncateUTF8(str03, 30));
 	}
 	
-	private static String truncateUTF8(String val_str, int maxBytes) {
+	public static String truncateUTF8(String val_str, int maxBytes) {
 		int b = 0;
 		for (int i = 0; i < val_str.length(); i++) {
 			char ch = val_str.charAt(i);
