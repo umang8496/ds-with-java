@@ -17,20 +17,19 @@ public class BoyerMooreHorspoolAlgorithmTest {
 	@Test
 	public void test_1() {
 		Assert.assertEquals(3, BoyerMooreHorspoolAlgorithm.search(text_1, "onions"));
-		Assert.assertEquals(0, RabinKarpAlgorithm.searchForPattern(text_1, "onion"));
-		Assert.assertEquals(-1, RabinKarpAlgorithm.searchForPattern(text_1, "train"));
+		Assert.assertEquals(0, BoyerMooreHorspoolAlgorithm.search(text_1, "onion"));
+		Assert.assertEquals(-1, BoyerMooreHorspoolAlgorithm.search(text_1, "train"));
 	}
 
 	@Test
 	public void test_2() {
-		Assert.assertEquals(0, RabinKarpAlgorithm.searchForPattern(text_2, "trail"));
-		Assert.assertEquals(5, RabinKarpAlgorithm.searchForPattern(text_2, "train"));
-		Assert.assertEquals(-1, RabinKarpAlgorithm.searchForPattern(text_2, "onions"));
+		Assert.assertEquals(0, BoyerMooreHorspoolAlgorithm.search(text_2, "trail"));
+		Assert.assertEquals(5, BoyerMooreHorspoolAlgorithm.search(text_2, "train"));
+		Assert.assertEquals(-1, BoyerMooreHorspoolAlgorithm.search(text_2, "onions"));
 	}
 	
 	@Test
 	public void test_3() {
-		Assert.assertEquals(9, RabinKarpAlgorithm.searchForPattern("trusthardtoothbrushes", "tooth"));
-		
+		Assert.assertEquals(9, BoyerMooreHorspoolAlgorithm.search("trusthardtoothbrushes", "tooth"));
 	}
 }
