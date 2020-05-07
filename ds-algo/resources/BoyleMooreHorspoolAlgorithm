@@ -1,0 +1,77 @@
+
+==============================
+Boyer-Moore-Horspool Algorithm
+==============================
+Boyer-Moore-Horspool is an algorithm for finding substrings into strings.
+This algorithm compares each characters of substring to find a word or the same characters into the string.
+When characters do not match, the search jumps to the next matching position in the pattern by the value indicated in the Bad Match Table.
+The Bad Match Table indicates how many jumps should it move from the current position to the next.
+
+The algorithm was published by Nigel Horspool, in 1980, a professor of computer science at the University of Victoria.
+He is co-inventor of Dynamic Markov Compression and editor-at-large of the journal Software.
+Also, he is the author of C Programming in the Berkeley UNIX Environment.
+
+His work was based on Boyer–Moore string search algorithm. This is related to the Knuth–Morris–Pratt algorithm.
+Horspool improve the efficiency of the original algorithm to achieve the complexity to O(mn) in the worst case.
+
+As an example, we will find “abcd” into the string “eovadabcdftoy”
+
+The first step is calculate the value of each letter of the substring to create the Bad Match Table, using this formula,
+
+Value = length of substring – index of each letter in the substring – 1
+
+Note that the value of the last letter and other letters that are not in the substring will be the length of the substring
+Finally, the value should be assigned to each letter in the Bad Match Table. After calculating the value, your table will look like this,
+
+value(a) = 4 - 0 - 1 = 3
+value(b) = 4 - 1 - 1 = 2
+value(c) = 4 - 2 - 1 = 1
+value(d) = 4
+value(*) = 4
+
+After that, you can compare the substring and the string. You start from the index of the end letter in the substring, in this case the letter “d.”
+	If the letter matches, then compare with the preceding letter, “c” in this case.
+	If it doesn’t match, check its value in the Bad Match Table.
+	Then, skip the number of spaces that the table value indicates.
+
+Repeat this steps until all the letters match.
+
+For Example
+-----------
+	e o v a d a b c d f t o y
+	a b c d
+	Since character d does not match with character a, so see the Bad-Character-Table and get the value for character a.
+	Then move the text pointer to that many places. In this case move 3 places.
+
+	e o v a d a b c d f t o y
+	      a b c d
+	Again character d does not match with character b, so see the Bad-Character-Table and get the value for character b. In this case move 2 places.
+
+	e o v a d a b c d f t o y
+	          a b c d
+	Now we have found the match at index 5.
+
+
+===========
+Performance
+===========
+The Boyer-Moore-Horspool algorithm execution time is linear in the size of the string being searched.
+It can have a lower execution time factor than many other search algorithms.
+
+For one, it does not need to check all characters of the string. It skips over some of them with help of the Bad Match table.
+
+The algorithm gets faster as the substring being searched for becomes longer.
+This is because with each unsuccessful attempt to find a match between the substring and the string, the algorithm uses the Bad Match table to rule out positions where the substring cannot match.
+
+
+==========
+Conclusion
+==========
+Boyer-Moore-Horspool is faster, simpler and optimized the searches of substrings. It has the following uses,
+	Searchbars
+	Auto-correctors
+	String Analyzers
+	Big Data
+	Text labeling
+
+Boyer-Moore-Horspool is the best algorithm for string searches.
