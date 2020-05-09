@@ -1,0 +1,43 @@
+
+===========
+Z-Algorithm
+===========
+Z algorithm is a linear time string matching algorithm which runs in O(n) complexity.
+It is used to find all occurrence of a pattern P in a string S, which is common string searching problem.
+
+Given a string S of length n, the Z Algorithm produces an array Z where Z[i] is the length of the longest substring starting from S[i] which is also a prefix of S,
+The maximum k such that S[j] = S[i + j] for all 0 ≤ j < k. Note that Z[i] = 0 means that S[0] ≠ S[i].
+For easier terminology, we will refer to substrings which are also a prefix as prefix-substrings.
+
+What is Z array ?
+-----------------
+For a string str[0..n-1], Z array is of same length as string.
+An element Z[i] of Z array stores length of the longest substring starting from str[i] which is also a prefix of str[0..n-1].
+The first entry of Z array is meaningless as complete string is always prefix of itself.
+
+For Example:
+Index            0   1   2   3   4   5   6   7   8   9  10  11 
+Text             a   a   b   c   a   a   b   x   a   a   a   z
+Z values         X   1   0   0   3   1   0   0   2   2   1   0 
+
+More Examples:
+str  = "aaaaaa"
+Z[]  = {x, 5, 4, 3, 2, 1}
+
+str = "aabaacd"
+Z[] = {x, 1, 0, 2, 1, 0, 0}
+
+str = "abababab"
+Z[] = {x, 0, 6, 0, 4, 0, 2, 0}
+
+How is Z array helpful in Searching Pattern in Linear time ?
+------------------------------------------------------------
+The idea is to concatenate pattern and text, and create a string “P$T” where P is pattern, $ is a special character should not be present in pattern and text, and T is text.
+Build the Z array for concatenated string. In Z array, if Z value at any point is equal to pattern length, then pattern is present at that point.
+
+How to construct Z array ?
+--------------------------
+A Simple Solution is two run two nested loops:
+	The outer loop goes to every index and 
+	The inner loop finds length of the longest prefix that matches substring starting at current index
+The time complexity of this solution is O(n2).
