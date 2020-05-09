@@ -1,0 +1,49 @@
+
+=====================
+Boyer-Moore Algorithm
+=====================
+The Boyer-Moore algorithm is consider the most efficient string-matching algorithm in usual applications, like text editors and commands substitutions.
+The reason is that it woks the fastest when the alphabet is moderately sized and the pattern is relatively long.
+
+It was developed by Robert S. Boyern and J Strother Moore in 1977.
+This is the combination of two approaches.
+	Bad Charater Approach
+	Good Suffix Approach
+Both of the above approaches can also be used independently to search a pattern in a text.
+
+Bad Charater Approach
+---------------------
+The character of the text which does not match with the current character of pattern is called the Bad Character.
+Upon mismatch we shift the pattern until:
+The mismatch becomes a match
+	If the mismatch occur then we see the Bad-Character-Table for shifting the pattern.
+Pattern P move past the mismatch character
+	 If the mismatch occur and the mismatch character is not available in the Bad-Character-Table, then we shift the whole pattern accordingly.
+
+Good Suffix Approach
+--------------------
+Just like the bad character heuristic, a preprocessing table is generated for good suffix approach.
+Let t be substring of text T which is matched with substring of pattern P.
+Now we shift pattern until:
+Another occurrence of t in P matched with substring of pattern P.
+A prefix of P, which matches with the suffix of t.
+P moves past t.
+
+The algorithm scans the characters of the pattern from right to left beginning with the rightmost one.
+In case of a mismatch (or a complete match of the whole pattern) it uses two pre-computed functions to shift the window to the right.
+
+The two shifts functions are
+	good suffix shift or matching shift : aligns only matching pattern characters against target characters already successfully matched
+	bad character shift or occurrence shift : avoids repeating unsuccessful comparisons against a target character
+
+A shift is calculated by applying two rules: the bad character rule and the good suffix rule.
+The actual shifting offset is the maximum of the shifts calculated by these rules.
+
+
+==========
+Conclusion
+==========
+Boyer-Moore algorithm is very fast on large alphabet ( relative to the length of the pattern).
+Not applicable for small alphabet ( relative to the length of the pattern ).
+For binary strings KMP algorithm is recommended.
+For the very shortest pattern, the brute force algorithm may be better.
