@@ -229,7 +229,43 @@ public class AvlTree {
 			}
 		}
 	}
+	
+	public int getNumberOfLeafNodes() {
+		if (this._getRootNode() == null) {
+			throw new NoRootAvailableException("root node is not available");
+		} else {
+			return this._getNumberOfLeafNodes(this._getRootNode());
+		}
+	}
 
+	private int _getNumberOfLeafNodes(AvlNode node) {
+		if (this._isLeafNode(node)) {
+			return 1;
+		}
+
+		int leftLeaves = 0;
+		int rightLeaves = 0;
+
+		if (this._hasLeftNode(node))
+			leftLeaves = this._getNumberOfLeafNodes(node.getLeftNode());
+
+		if (this._hasRightNode(node))
+			rightLeaves = this._getNumberOfLeafNodes(node.getRightNode());
+
+		return leftLeaves + rightLeaves;
+	}
+	
+	public boolean isLeafNode(AvlNode node) {
+		if (this._getRootNode() == null) {
+			throw new NoRootAvailableException("root node is not available");
+		} else {
+			return this._isLeafNode(node);
+		}
+	}
+
+	private boolean _isLeafNode(AvlNode node) {
+		return ((node.getRightNode() == null) && (node.getLeftNode() == null));
+	}
 
 
 
