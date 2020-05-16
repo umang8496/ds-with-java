@@ -69,6 +69,79 @@ public class AvlTree {
 		}
 	}
 
+	private AvlNode _rebalance(AvlNode z) {
+		this._updateHeight(z);
+		int balance = this._getBalance(z);
+		if (balance > 1) {
+			if (this._computeHeight(z.getRightNode().getRightNode()) > this
+					._computeHeight(z.getRightNode().getLeftNode())) {
+				z = this._rotateLeft(z);
+			} else {
+				z.setRightNode(this._rotateRight(z.getRightNode()));
+				z = this._rotateLeft(z);
+			}
+		} else if (balance < -1) {
+			if (this._computeHeight(z.getLeftNode().getLeftNode()) > this
+					._computeHeight(z.getLeftNode().getRightNode()))
+				z = this._rotateRight(z);
+			else {
+				z.setLeftNode(this._rotateLeft(z.getLeftNode()));
+				z = this._rotateRight(z);
+			}
+		}
+		return z;
+	}
+	
+	private void _updateHeight(AvlNode node) {
+		node.setHeight(1 + Math.max(this._computeHeight(node.getLeftNode()), this._computeHeight(node.getRightNode())));
+	}
+
+	private int _getBalance(AvlNode node) {
+		return (node == null) ? 0 : this._computeHeight(node.getRightNode()) - this._computeHeight(node.getLeftNode());
+	}
+
+	private int _computeHeight(AvlNode node) {
+		return node == null ? -1 : node.getHeight();
+	}
+	
+	/**
+	 * Assume we have a BST called T1, with Y as the root node, X as the left  child of Y, and Z as the right child of X.
+	 * Given the characteristics of a BST, we know that X < Z < Y.
+	 * After a right rotation of Y, we have a tree called T2 with X as the root and Y as the right child of X and Z as the left child of Y.
+	 * T2 is still a BST because it keeps the order X < Z < Y.
+	 * 
+	 * @param y
+	 * @return
+	 */
+	private AvlNode _rotateRight(AvlNode y) {
+		AvlNode x = y.getLeftNode();
+		AvlNode z = x.getRightNode();
+		x.setRightNode(y);
+		y.setLeftNode(z);
+		this._updateHeight(y);
+		this._updateHeight(x);
+		return x;
+	}
+
+	/**
+	 * Assume a BST called T1, with Y as the root node, X as the right child of Y, and Z as the left child of X.
+	 * Given this, we know that Y < Z < X.
+	 * After a left rotation of Y, we have a tree called T2 with X as the root and Y as the left child of X and Z as the right child of Y.
+	 * T2 is still a BST because it keeps the order Y < Z < X.
+	 * 
+	 * @param y
+	 * @return
+	 */
+	private AvlNode _rotateLeft(AvlNode y) {
+		AvlNode x = y.getRightNode();
+		AvlNode z = x.getLeftNode();
+		x.setLeftNode(y);
+		y.setRightNode(z);
+		this._updateHeight(y);
+		this._updateHeight(x);
+		return x;
+	}
+
 	public void displayInOrder() {
 		if (this._getRootNode() == null) {
 			throw new NoRootAvailableException("root node is not available");
