@@ -67,6 +67,8 @@ public class AvlTree {
 				}
 			}
 		}
+
+		return this._rebalance(currentNode);
 	}
 
 	private AvlNode _rebalance(AvlNode z) {
@@ -228,4 +230,36 @@ public class AvlTree {
 		}
 	}
 
+
+
+
+	public int getHeightOfTheTree() {
+		// The height of a binary tree is the number of edges between the tree's root and its furthest leaf.
+		// Height of Tree with only root node is 0.
+		// Depth of the tree is calculated from the root node; Whereas, height of the tree is calculated from the leafnode.
+		if (this._getRootNode() == null) {
+			return -1; // no root node
+		} else {
+			return this._getHeight(this._getRootNode());
+		}
+	}
+	
+	private int _getHeight(AvlNode node) {
+		if (this._isLeafNode(node)) {
+			return 0;
+		} else {
+			int leftSubTreeHeight = 0;
+			int rightSubTreeHeight = 0;
+
+			if (this._hasLeftNode(node)) {
+				leftSubTreeHeight = this._getHeight(node.getLeftNode());
+			}
+			if (this._hasRightNode(node)) {
+				rightSubTreeHeight = this._getHeight(node.getRightNode());
+			}
+
+			return (rightSubTreeHeight >= leftSubTreeHeight) ? (rightSubTreeHeight + 1) : (leftSubTreeHeight + 1);
+		}
+	}
+	
 }
