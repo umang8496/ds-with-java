@@ -296,7 +296,35 @@ public class AvlTree {
 		}
 		return this._getSmallest(node.getLeftNode());
 	}
+	
+	public boolean findNode(int value) {
+		if (this._getRootNode() == null) {
+			throw new NoRootAvailableException("root node is not available");
+		} else {
+			boolean found = this._findNodeInTree(value, this._getRootNode());
+			return (found ? true : false);
+		}
+	}
 
+	private boolean _findNodeInTree(int value, AvlNode node) {
+		if (node.getData() == value) {
+			return true;
+		}
+		
+		if (node.getData() != value && this.isLeafNode(node)) {
+			return false;
+		}
+
+		if (node.getData() < value && this._hasRightNode(node)) {
+			return this._findNodeInTree(value, node.getRightNode());
+		}
+
+		if (node.getData() > value && this._hasLeftNode(node)) {
+			return this._findNodeInTree(value, node.getLeftNode());
+		}
+
+		return false;
+	}
 
 	public int getHeightOfTheTree() {
 		// The height of a binary tree is the number of edges between the tree's root and its furthest leaf.
