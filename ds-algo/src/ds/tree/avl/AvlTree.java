@@ -1,6 +1,7 @@
 package ds.tree.avl;
 
-import java.util.ArrayList;
+import java.util.ArrayDeque;
+import java.util.Queue;
 
 import ds.exp.NoRootAvailableException;
 import ds.exp.NodeCreationException;
@@ -36,13 +37,13 @@ public class AvlTree {
 
 	public void insertNode(int data) {
 		if (this.rootNode == null) {
-			this.rootNode = new AvlNode(data);
+			this.rootNode = this._createNode(data);
 		} else {
-			this._insertNode(data, this.rootNode);
+			this.rootNode = this._insertNode(data, this.rootNode);
 		}
 	}
 
-	private void _insertNode(int data, AvlNode currentNode) {
+	private AvlNode _insertNode(int data, AvlNode currentNode) {
 		if (this._getRootNode() == null) {
 			throw new NoRootAvailableException("root node is not available");
 		} else {
@@ -51,36 +52,21 @@ public class AvlTree {
 					this._insertNode(data, currentNode.getRightNode());
 				} else {
 					currentNode.setRightNode(this._createNode(data));
+					// currentNode.rightNode = this._createNode(data);
 					currentNode.getRightNode().setParent(currentNode);
+					// currentNode.rightNode.parent = currentNode;
 				}
 			} else {
 				if (this._hasLeftNode(currentNode)) {
 					this._insertNode(data, currentNode.getLeftNode());
 				} else {
 					currentNode.setLeftNode(this._createNode(data));
+					// currentNode.leftNode = this._createNode(data);
 					currentNode.getLeftNode().setParent(currentNode);
+					// currentNode.leftNode.parent = currentNode;
 				}
 			}
 		}
-	}
-
-	public int getHeight() {
-		if (this._getRootNode() != null) {
-			return this._getHeight(this._getRootNode(), 0);
-		} else {
-			return 0;
-		}
-	}
-
-	private int _getHeight(AvlNode currentNode, int currentHeight) {
-		if (currentNode == null) {
-			return currentHeight;
-		}
-
-		int leftHeight = this._getHeight(currentNode.getLeftNode(), currentHeight + 1);
-		int rightHeight = this._getHeight(currentNode.getRightNode(), currentHeight + 1);
-
-		return Math.max(leftHeight, rightHeight);
 	}
 
 	public void displayInOrder() {
@@ -142,5 +128,31 @@ public class AvlTree {
 		}
 		System.out.print(node.getData() + " ");
 	}
-	
+
+	public void displayLevelOrder() {
+		if (this._getRootNode() == null) {
+			throw new NoRootAvailableException("root node is not available");
+		} else {
+			System.out.print("LevelOrder : [ ");
+			this._levelOrderTraversal(this._getRootNode());
+			System.out.println("]");
+		}
+	}
+
+	private void _levelOrderTraversal(AvlNode node) {
+		Queue<AvlNode> queue = new ArrayDeque<>();
+		queue.add(this._getRootNode());
+		AvlNode current = null;
+		while (!queue.isEmpty()) {
+			current = queue.poll();
+			System.out.print(current.getData() + " ");
+			if (this._hasLeftNode(current)) {
+				queue.add(current.getLeftNode());
+			}
+			if (this._hasRightNode(current)) {
+				queue.add(current.getRightNode());
+			}
+		}
+	}
+
 }
