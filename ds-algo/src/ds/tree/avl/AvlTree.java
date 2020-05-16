@@ -266,7 +266,36 @@ public class AvlTree {
 	private boolean _isLeafNode(AvlNode node) {
 		return ((node.getRightNode() == null) && (node.getLeftNode() == null));
 	}
+	
+	public Integer getLargest() {
+		if (this._getRootNode() == null) {
+			throw new NoRootAvailableException("root node is not available");
+		} else {
+			return this._getLargest(this._getRootNode());
+		}
+	}
 
+	private Integer _getLargest(AvlNode node) {
+		if (node.getRightNode() == null) {
+			return node.getData();
+		}
+		return this._getLargest(node.getRightNode());
+	}
+
+	public Integer getSmallest() {
+		if (this._getRootNode() == null) {
+			throw new NoRootAvailableException("root node is not available");
+		} else {
+			return this._getSmallest(this._getRootNode());
+		}
+	}
+
+	private Integer _getSmallest(AvlNode node) {
+		if (node.getLeftNode() == null) {
+			return node.getData();
+		}
+		return this._getSmallest(node.getLeftNode());
+	}
 
 
 	public int getHeightOfTheTree() {
