@@ -27,7 +27,7 @@ public class RodCuttingProblem {
 			int temp = 0;
 			// Recursively cut the rod in different pieces and compare different configurations
 			for (int f = 0; f < size; f++) {
-				temp = array[size -f - 1] + maximizeValueForRod(array, f);
+				temp = array[size - f - 1] + maximizeValueForRod(array, f);
 				if (temp > maxVal) {
 					maxVal = temp;
 				}
@@ -35,4 +35,28 @@ public class RodCuttingProblem {
 			return maxVal;
 		}
 	}
+	
+	public static int maximizeValueForRodUsingDP(int[] array, int size) {
+		if (array == null || size < 0) {
+			return -1;
+		} else if (size == 0) {
+			return 0;
+		} else {
+			int[] ARR = new int[size + 1];
+			ARR[0] = 0;
+
+			for (int f = 1; f <= size; f++) {
+				int maxVal = -1;
+				for (int ff = 1; ff <= f; ff++) {
+					int temp = array[ff - 1] + ARR[f - ff];
+					if (temp > maxVal) {
+						maxVal = temp;
+					}
+				}
+				ARR[f] = maxVal;
+			}
+			return ARR[size];
+		}
+	}
+	
 }
