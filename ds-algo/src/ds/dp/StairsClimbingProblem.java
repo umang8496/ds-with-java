@@ -18,5 +18,24 @@ public class StairsClimbingProblem {
 		}
 	}
 	
+	public static int numberOfWaysToClimbUsingDP(int stairs) {
+		if (stairs <= 0) {
+			return -1;
+		}else {
+			if (stairs == 1) {
+				return 1;		// {1}
+			} else if (stairs == 2) {
+				return 2;		// {1,1} and {2}
+			} else {
+				int[] dp = new int[stairs+1];
+				dp[1] = 1;
+				dp[2] = 2;
+				for(int f = 3; f <= stairs; f++) {
+					dp[f] = dp[f - 1] + dp[f - 2];
+				}
+				return dp[stairs];
+			}
+		}
+	}
 	
 }
