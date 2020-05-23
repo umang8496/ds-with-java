@@ -1,4 +1,4 @@
-package ds.string;
+package strings;
 
 public class MinimumDeletionRequiredForConvertingStringIntoPalindrome {
 	
