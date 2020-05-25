@@ -34,5 +34,15 @@ public class KthElementTest {
 	public void test_6() {
 		Assert.assertEquals(-2, KthElement.findKthSmallestElement(new int[] {-2}, 1));
 	}
+	
+	@Test
+	public void test_7() {
+		Assert.assertEquals(4, KthElement.getKthLargestUsingPQ(new int[] { -2, 1, -3, 4, -1, 3, 1, -5, -4 }, 1));
+	}
+	
+	@Test
+	public void test_8() {
+		Assert.assertEquals(3, KthElement.getKthLargestUsingPQ(new int[] { -2, 1, -3, 4, -1, 3, 1, -5, -4 }, 2));
+	}
 
 }
